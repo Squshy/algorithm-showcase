@@ -14,13 +14,13 @@ export const Nav: React.FC<NavProps> = ({}) => {
         >
           <div className={`flex flex-row space-x-2 items-center`}>
             <div
-              className={` bg-gradient-to-r from-blue-500 to-purple-500 rounded-full p-2`}
+              className={` bg-gradient-to-r from-blue-500 to-purple-500 rounded-full p-1`}
             >
               <LightningBoltIcon className={`h-6 w-6`} />
             </div>
             <p className={`font-extralight text-2xl`}>ALGORITHMS</p>
           </div>
-          <div>ME</div>
+        <div className={`font-thin`}>DIJKSTRA</div>
         </div>
       </div>
     </header>
