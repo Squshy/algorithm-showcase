@@ -20,6 +20,9 @@ module.exports = {
       },
       maxWidth: {
         '8xl': "92rem"
+      },
+      inset: {
+        '105': "105px"
       }
     },
   },
