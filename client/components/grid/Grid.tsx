@@ -33,10 +33,6 @@ export const Grid: React.FC<GridProps> = ({}) => {
       newGird.rows = Math.floor(
         gridRef.current.getBoundingClientRect().height / PX_IN_REM
       );
-      console.log("Grid Width:", gridRef.current.getBoundingClientRect().width);
-      console.log("Window Width:", width);
-      console.log("Grid cols:", newGird.cols);
-      console.log("Grid rows:", newGird.rows);
     }
     setGridDimensions(newGird);
   }, [width, height]);
@@ -62,8 +58,13 @@ export const Grid: React.FC<GridProps> = ({}) => {
   };
 
   return (
-    <div className={`w-full flex flex-wrap h-64 justify-center`} ref={gridRef}>
-      {createGrid()}
+    <div className={`w-full px-2 py-3 border-gray-800 border-2 rounded-md bg-gray-700 bg-opacity-25`}>
+      <div
+        className={`w-full flex flex-wrap h-64 justify-center`}
+        ref={gridRef}
+      >
+        {createGrid()}
+      </div>
     </div>
   );
 };
