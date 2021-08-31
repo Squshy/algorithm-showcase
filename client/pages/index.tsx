@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { Grid } from "../components/Grid";
+import { Grid } from "../components/grid/Grid";
 import { Nav } from "../components/nav/Nav";
 import { SideBar } from "../components/nav/sidebar/Sidebar";
 
