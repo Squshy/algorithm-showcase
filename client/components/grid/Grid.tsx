@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useRef } from "react";
 import { useState } from "react";
 import { useOnScreenResize } from "../../hooks/useOnResize";
+import { SpinnerIcon } from "../../svg/Spinner";
 import { GridNode } from "./GridNode";
 
 const PX_IN_REM = 16;
@@ -20,21 +21,26 @@ export const Grid: React.FC<GridProps> = ({}) => {
     cols: 0,
   });
   const gridRef: any = useRef<HTMLDivElement>();
+  const [loadingGrid, setLoadingGrid] = useState<boolean>(true);
 
   useEffect(() => {
-    const newGird: GridDimensions = {
-      rows: 5,
-      cols: 0,
-    };
-    if (gridRef.current) {
-      newGird.cols = Math.floor(
-        gridRef.current.getBoundingClientRect().width / PX_IN_REM
-      );
-      newGird.rows = Math.floor(
-        gridRef.current.getBoundingClientRect().height / PX_IN_REM
-      );
-    }
-    setGridDimensions(newGird);
+    setLoadingGrid(true)
+    setTimeout(() => {
+      const newGird: GridDimensions = {
+        rows: 5,
+        cols: 0,
+      };
+      if (gridRef.current) {
+        newGird.cols = Math.floor(
+          gridRef.current.getBoundingClientRect().width / PX_IN_REM
+        );
+        newGird.rows = Math.floor(
+          gridRef.current.getBoundingClientRect().height / PX_IN_REM
+        );
+      }
+      setGridDimensions(newGird);
+      setLoadingGrid(false);
+    }, 250);
   }, [width, height]);
 
   const createGrid = (): Array<JSX.Element> => {
@@ -58,12 +64,14 @@ export const Grid: React.FC<GridProps> = ({}) => {
   };
 
   return (
-    <div className={`w-full px-2 py-3 border-gray-800 border-2 rounded-md bg-gray-700 bg-opacity-25`}>
+    <div
+      className={`w-full px-2 py-3 border-gray-800 border-2 rounded-md bg-gray-700 bg-opacity-25`}
+    >
       <div
         className={`w-full flex flex-wrap h-64 justify-center`}
         ref={gridRef}
       >
-        {createGrid()}
+        {loadingGrid ? <SpinnerIcon className={`h-12 w-12 text-gray-600 self-center`} /> : createGrid()}
       </div>
     </div>
   );
