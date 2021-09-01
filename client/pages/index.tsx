@@ -1,28 +1,11 @@
 import type { NextPage } from "next";
-import { Heap } from "../classes/Heap";
 import { Grid } from "../components/grid/Grid";
 import { Nav } from "../components/nav/Nav";
 import { SideBar } from "../components/nav/sidebar/Sidebar";
+import { TestGraph } from "../helper";
 
 const Home: NextPage = () => {
-  const heap = new Heap();
-  heap.push(25);
-  heap.push(5);
-  heap.push(40);
-  heap.push(70);
-  heap.push(90);
-  heap.push(44);
-  console.log(heap.nodes.join(","));
-
-  let a = [];
-  a.push(heap.extractMin());
-  a.push(heap.extractMin());
-  a.push(heap.extractMin());
-  a.push(heap.extractMin());
-  a.push(heap.extractMin());
-  console.log("Bottom 5 items:", a);
-  a.push(heap.extractMin());
-  console.log(heap.nodes.join(","));
+  TestGraph();
   return (
     <div className={`font-sans antialiased`}>
       <Nav />

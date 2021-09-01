@@ -1,7 +1,7 @@
 import { Node } from "./Node";
 
 export class Heap {
-  nodes: Array<number> = [];
+  nodes: Array<Node>;
   constructor() {
     this.nodes = [];
   }
@@ -24,16 +24,18 @@ export class Heap {
     this.nodes[j] = temp_;
   }
 
-  push(key: number) {
-    this.nodes[this.nodes.length] = key;
+  push(key: Node) {
+    this.nodes.push(key);
     this.heapifyUp();
   }
 
   heapifyUp() {
     let currentIdx: number = this.nodes.length - 1;
-
+    
     while (
-      this.nodes[currentIdx] < this.nodes[this.getParentIndex(currentIdx)]
+      this.nodes[this.getParentIndex(currentIdx)] &&
+      this.nodes[currentIdx].getWeightedDistance() <
+        this.nodes[this.getParentIndex(currentIdx)].getWeightedDistance()
     ) {
       this.swap(currentIdx, this.getParentIndex(currentIdx));
 
@@ -49,13 +51,16 @@ export class Heap {
 
       if (
         this.nodes[this.getRightChildIndex(currentIdx)] !== undefined &&
-        this.nodes[this.getRightChildIndex(currentIdx)] <
-          this.nodes[this.getLeftChildIndex(currentIdx)]
+        this.nodes[this.getRightChildIndex(currentIdx)].getWeightedDistance() <
+          this.nodes[this.getLeftChildIndex(currentIdx)].getWeightedDistance()
       ) {
         smallestChildIdx = this.getRightChildIndex(currentIdx);
       }
 
-      if (this.nodes[currentIdx] > this.nodes[smallestChildIdx]) {
+      if (
+        this.nodes[currentIdx].getWeightedDistance() >
+        this.nodes[smallestChildIdx].getWeightedDistance()
+      ) {
         this.swap(currentIdx, smallestChildIdx);
         currentIdx = smallestChildIdx;
       } else {
