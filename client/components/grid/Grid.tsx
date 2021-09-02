@@ -1,8 +1,10 @@
-import React, { useEffect } from "react";
-import { useRef } from "react";
-import { useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Graph } from "../../classes/Graph";
 import { Node } from "../../classes/Node";
+import {
+  useNodeContext,
+  useNodeUpdateContext,
+} from "../../contexts/NodeContext";
 import { useOnScreenResize } from "../../hooks/useOnResize";
 import { SpinnerIcon } from "../../svg/Spinner";
 import { GridNode } from "./GridNode";
@@ -24,41 +26,69 @@ export const Grid: React.FC<GridProps> = ({}) => {
   });
   const gridRef: any = useRef<HTMLDivElement>();
   const [loadingGrid, setLoadingGrid] = useState<boolean>(true);
-  const [graph, setGraph] = useState<Graph | undefined>();
+  const [graph, setGraph] = useState<Graph>();
+  const [nodes, setNodes] = useState<Array<Array<Node>>>([[]]);
 
-  useEffect(() => {
-    setLoadingGrid(true)
-    setTimeout(() => {
-      const newGird: GridDimensions = {
-        rows: 5,
-        cols: 0,
-      };
-      if (gridRef.current) {
-        newGird.cols = Math.floor(
-          gridRef.current.getBoundingClientRect().width / PX_IN_REM
-        );
-        newGird.rows = Math.floor(
-          gridRef.current.getBoundingClientRect().height / PX_IN_REM
-        );
-      }
-      setGridDimensions(newGird);
-      setLoadingGrid(false);
-    }, 250);
-  }, [width, height]);
+  const createGrid = useCallback((maxRows, maxCols) => {
+    setLoadingGrid(true);
+    const newGraph = new Graph(maxRows, maxCols);
+    const allNodes: Array<Array<Node>> = [];
 
-  const createGrid = () => {
-    // const nodes: Array<JSX.Element> = [];
-    const newGraph = new Graph(gridDimensions.rows, gridDimensions.cols);
-
-    for (let i = 0; i < gridDimensions.rows; i++) {
-      for (let j = 0; j < gridDimensions.cols; j++) {
+    for (let i = 0; i < maxRows; i++) {
+      const currentRow: Array<Node> = [];
+      for (let j = 0; j < maxCols; j++) {
         const newNode = new Node(i, j);
-        newGraph.addVertex(newNode)
+        newGraph.addVertex(newNode);
+        currentRow.push(newNode);
       }
+      console.log("Current Row:", currentRow);
+      allNodes.push(currentRow);
     }
 
+    // Add all neighbours to the nodes
+    for (let i = 0; i < maxRows; i++) {
+      for (let j = 0; j < maxCols; j++) {
+        newGraph.addNeighbouringEdgesToNode(allNodes[i][j], allNodes, i, j);
+      }
+    }
+    console.log("All Nodes:", allNodes);
     setGraph(newGraph);
-    // return nodes;
+    setNodes(allNodes);
+    setLoadingGrid(false);
+  }, []);
+
+  useEffect(() => {
+    const newGrid: GridDimensions = {
+      rows: 5,
+      cols: 0,
+    };
+    if (gridRef.current) {
+      newGrid.cols = Math.floor(
+        gridRef.current.getBoundingClientRect().width / PX_IN_REM
+      );
+      newGrid.rows = Math.floor(
+        gridRef.current.getBoundingClientRect().height / PX_IN_REM
+      );
+    }
+
+    createGrid(newGrid.rows, newGrid.cols);
+    setGridDimensions(newGrid);
+  }, [width, height, createGrid]);
+
+  const displayGrid = () => {
+    return nodes?.map((row, i) => {
+      return row.map((col, j) => {
+        return (
+          <GridNode
+            key={`${row} ${col}`}
+            row={nodes[i][j].row}
+            col={nodes[i][j].col}
+            endCol={nodes[i][j].col === gridDimensions.cols - 1}
+            endRow={nodes[i][j].row === gridDimensions.rows - 1}
+          />
+        );
+      });
+    });
   };
 
   return (
@@ -69,7 +99,11 @@ export const Grid: React.FC<GridProps> = ({}) => {
         className={`w-full flex flex-wrap h-96 justify-center`}
         ref={gridRef}
       >
-        {/* {loadingGrid ? <SpinnerIcon className={`h-12 w-12 text-gray-600 self-center`} /> : createGrid()} */}
+        {loadingGrid ? (
+          <SpinnerIcon className={`h-12 w-12 text-gray-600 self-center`} />
+        ) : (
+          displayGrid()
+        )}
       </div>
     </div>
   );

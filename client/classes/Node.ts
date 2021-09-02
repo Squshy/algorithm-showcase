@@ -1,3 +1,5 @@
+import { nodeToString } from "../utils";
+
 export class Node {
   weight: number;
   row: number;
@@ -40,7 +42,7 @@ export class Node {
     return this.distance + this.weight;
   }
 
-  getRowCol() {
-    return `${this.row} ${this.col}`
+  toString() {
+    return nodeToString(this.row, this.col) 
   }
 }

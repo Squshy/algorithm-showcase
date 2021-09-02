@@ -1,57 +1,67 @@
+import { nodeToString } from "../utils";
 import { Heap } from "./Heap";
 import { Node } from "./Node";
 
 export class Graph {
   numRows: number;
   numCols: number;
-  adjacenyList: Map<string, Set<Node>>;
+  adjacencyList: Map<string, Set<Node>>;
 
   constructor(numRows: number, numCols: number) {
     this.numRows = numRows;
     this.numCols = numCols;
-    this.adjacenyList = new Map();
+    this.adjacencyList = new Map();
   }
 
   // add vertex v as key to adjaceny list
   addVertex(v: Node) {
-    this.adjacenyList.set(v.getRowCol(), new Set());
+    this.adjacencyList.set(v.toString(), new Set());
   }
 
   addEdge(v: Node, w: Node) {
-    const vSet = this.adjacenyList.get(v.getRowCol());
-    const wSet = this.adjacenyList.get(w.getRowCol());
+    const vSet = this.adjacencyList.get(v.toString());
+    const wSet = this.adjacencyList.get(w.toString());
 
     // set edge between v and w
     if (!vSet?.has(w)) {
-      this.adjacenyList.get(v.getRowCol())!.add(w);
-    } else {
-      console.log(`${w} is already in the set v`)
+      this.adjacencyList.get(v.toString())!.add(w);
     }
 
     // undirected graph so do the same with w to v
     if (!wSet?.has(v)) {
-      this.adjacenyList.get(w.getRowCol())!.add(v);
+      this.adjacencyList.get(w.toString())!.add(v);
     }
   }
 
-  addNeighbouringEdgesToNode(node: Node, row: number, col: number) {
-    const nodeToRowCol = (row: number, col: number) => {
-      return `${row} ${col}`;
-    };
-
+  addNeighbouringEdgesToNode(
+    node: Node,
+    allNodes: Array<Array<Node>>,
+    maxRows: number,
+    maxCols: number
+  ) {
     if (node.row > 0) {
+      this.addEdge(node, allNodes[node.row - 1][node.col]);
+    }
+    if (node.row < maxRows - 1) {
+      this.addEdge(node, allNodes[node.row + 1][node.col]);
+    }
+    if (node.col > 0) {
+      this.addEdge(node, allNodes[node.row][node.col - 1]);
+    }
+    if (node.col < maxCols - 1) {
+      this.addEdge(node, allNodes[node.row][node.col + 1]);
     }
   }
 
   printGraph() {
-    const keys = this.adjacenyList.keys();
+    const keys = this.adjacencyList.keys();
 
     for (let key of Array.from(keys)) {
-      const currentValue = this.adjacenyList.get(key);
+      const currentValue = this.adjacencyList.get(key);
       let string = "";
 
       currentValue?.forEach((node) => {
-        string += `[${node.getRowCol()}]`;
+        string += `${node.toString()}, `;
       });
       console.log(key + " -> " + string);
     }
