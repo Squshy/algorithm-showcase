@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Graph } from "../../classes/Graph";
 import { Node } from "../../classes/Node";
-import {
-  useNodeContext,
-  useNodeUpdateContext,
-} from "../../contexts/NodeContext";
 import { useOnScreenResize } from "../../hooks/useOnResize";
 import { SpinnerIcon } from "../../svg/Spinner";
 import { GridNode } from "./GridNode";
+
+const NODE_TO_SET = {
+  START: "START",
+  END: "END",
+};
 
 const PX_IN_REM = 16;
 
@@ -28,9 +29,9 @@ export const Grid: React.FC<GridProps> = ({}) => {
   const [loadingGrid, setLoadingGrid] = useState<boolean>(true);
   const [graph, setGraph] = useState<Graph>();
   const [nodes, setNodes] = useState<Array<Array<Node>>>([[]]);
+  const [nodeToSet, setNodeToSet] = useState(NODE_TO_SET.START);
 
   const createGrid = useCallback((maxRows, maxCols) => {
-    setLoadingGrid(true);
     const newGraph = new Graph(maxRows, maxCols);
     const allNodes: Array<Array<Node>> = [];
 
@@ -41,7 +42,6 @@ export const Grid: React.FC<GridProps> = ({}) => {
         newGraph.addVertex(newNode);
         currentRow.push(newNode);
       }
-      console.log("Current Row:", currentRow);
       allNodes.push(currentRow);
     }
 
@@ -51,29 +51,44 @@ export const Grid: React.FC<GridProps> = ({}) => {
         newGraph.addNeighbouringEdgesToNode(allNodes[i][j], allNodes, i, j);
       }
     }
-    console.log("All Nodes:", allNodes);
     setGraph(newGraph);
     setNodes(allNodes);
-    setLoadingGrid(false);
   }, []);
 
   useEffect(() => {
-    const newGrid: GridDimensions = {
-      rows: 5,
-      cols: 0,
-    };
-    if (gridRef.current) {
-      newGrid.cols = Math.floor(
-        gridRef.current.getBoundingClientRect().width / PX_IN_REM
-      );
-      newGrid.rows = Math.floor(
-        gridRef.current.getBoundingClientRect().height / PX_IN_REM
-      );
-    }
+    setLoadingGrid(true);
+    setTimeout(() => {
+      const newGrid: GridDimensions = {
+        rows: 5,
+        cols: 0,
+      };
+      if (gridRef.current) {
+        newGrid.cols = Math.floor(
+          gridRef.current.getBoundingClientRect().width / PX_IN_REM
+        );
+        newGrid.rows = Math.floor(
+          gridRef.current.getBoundingClientRect().height / PX_IN_REM
+        );
+      }
 
-    createGrid(newGrid.rows, newGrid.cols);
-    setGridDimensions(newGrid);
+      createGrid(newGrid.rows, newGrid.cols);
+      setGridDimensions(newGrid);
+      setLoadingGrid(false);
+    }, 250);
   }, [width, height, createGrid]);
+
+  const onGridNodeClick = (node: Node) => {
+    const allNodes = [...nodes];
+    switch (nodeToSet) {
+      case NODE_TO_SET.START:
+        allNodes[node.row][node.col].isStart = true;
+        break;
+      case NODE_TO_SET.END:
+        allNodes[node.row][node.col].isEnd = true;
+        break;
+    }
+    setNodes(allNodes);
+  };
 
   const displayGrid = () => {
     return nodes?.map((row, i) => {
@@ -81,10 +96,10 @@ export const Grid: React.FC<GridProps> = ({}) => {
         return (
           <GridNode
             key={`${row} ${col}`}
-            row={nodes[i][j].row}
-            col={nodes[i][j].col}
+            node={nodes[i][j]}
             endCol={nodes[i][j].col === gridDimensions.cols - 1}
             endRow={nodes[i][j].row === gridDimensions.rows - 1}
+            handleClick={onGridNodeClick}
           />
         );
       });
@@ -92,19 +107,37 @@ export const Grid: React.FC<GridProps> = ({}) => {
   };
 
   return (
-    <div
-      className={`w-full px-2 py-3 border-gray-800 border-2 rounded-md bg-gray-700 bg-opacity-25`}
-    >
+    <>
       <div
-        className={`w-full flex flex-wrap h-96 justify-center`}
-        ref={gridRef}
+        className={`w-full px-2 py-3 border-gray-800 border-2 rounded-md bg-gray-700 bg-opacity-25`}
       >
-        {loadingGrid ? (
-          <SpinnerIcon className={`h-12 w-12 text-gray-600 self-center`} />
-        ) : (
-          displayGrid()
-        )}
+        <div
+          className={`w-full flex flex-wrap h-96 justify-center`}
+          ref={gridRef}
+        >
+          {loadingGrid ? (
+            <SpinnerIcon className={`h-12 w-12 text-gray-600 self-center`} />
+          ) : (
+            displayGrid()
+          )}
+        </div>
+        <div
+          className={`mt-5 bg-gradient-to-r from-blue-500 to-purple-500 w-full p-2 flex flex-row rounded-md items-center justify-center space-x-4 border`}
+        >
+          <button
+            className={`p-2 bg-green-500 border-green-300 border w-24 rounded-md hover:bg-opacity-75 transition duration-150 ease-in-out`}
+            onClick={() => setNodeToSet(NODE_TO_SET.START)}
+          >
+            START
+          </button>
+          <button
+            className={`p-2 bg-red-500 border-red-300 border w-24 rounded-md hover:bg-opacity-75 transition duration-150 ease-in-out`}
+            onClick={() => setNodeToSet(NODE_TO_SET.END)}
+          >
+            END
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 };

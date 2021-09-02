@@ -1,5 +1,3 @@
-import { nodeToString } from "../utils";
-
 export class Node {
   weight: number;
   row: number;
@@ -43,6 +41,6 @@ export class Node {
   }
 
   toString() {
-    return nodeToString(this.row, this.col) 
+    return `[${this.row} ${this.col}]`
   }
 }

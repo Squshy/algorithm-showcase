@@ -1,4 +1,3 @@
-import { nodeToString } from "../utils";
 import { Heap } from "./Heap";
 import { Node } from "./Node";
 
@@ -53,6 +52,10 @@ export class Graph {
     }
   }
 
+  dijkstra() {
+    const visitedNodes = new Set();
+  }
+
   printGraph() {
     const keys = this.adjacencyList.keys();
 
@@ -63,7 +66,7 @@ export class Graph {
       currentValue?.forEach((node) => {
         string += `${node.toString()}, `;
       });
-      console.log(key + " -> " + string);
+      console.log(key + " -> " + string + "\n");
     }
   }
 }

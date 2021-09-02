@@ -2,11 +2,9 @@ import type { NextPage } from "next";
 import { Grid } from "../components/grid/Grid";
 import { Nav } from "../components/nav/Nav";
 import { SideBar } from "../components/nav/sidebar/Sidebar";
-import { NodeProvider } from "../contexts/NodeContext";
 import { TestGraph } from "../helper";
 
 const Home: NextPage = () => {
-  TestGraph();
   return (
     <div className={`font-sans antialiased`}>
       <Nav />
@@ -14,9 +12,9 @@ const Home: NextPage = () => {
         <SideBar />
         <main className={`flex flex-1 min-w-0`}>
           <div className={`flex flex-1 min-w-0 max-w-6xl mx-auto px-2`}>
-            <NodeProvider>
+            <div className={`flex flex-col w-full`}>
               <Grid />
-            </NodeProvider>
+            </div>
           </div>
         </main>
       </div>
