@@ -9,15 +9,16 @@ export class Node {
   isEnd: boolean;
   neighbours?: Array<Node>;
 
-  constructor(row: number, col: number, weight: number = 0) {
-    this.weight = weight;
+  constructor(row: number, col: number, distance: number = Infinity) {
+    this.weight = 0;
     this.row = row;
     this.col = col;
-    this.distance = Infinity;
+    this.distance = distance;
     this.visited = false;
     this.isWall = false;
     this.isStart = false;
     this.isEnd = false;
+    this.neighbours = []
   }
 
   setWeight(weight: number) {

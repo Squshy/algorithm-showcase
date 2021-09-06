@@ -1,3 +1,4 @@
+import { flatted2DArray } from "../utils";
 import { Heap } from "./Heap";
 import { Node } from "./Node";
 
@@ -52,8 +53,46 @@ export class Graph {
     }
   }
 
-  dijkstra() {
-    const visitedNodes = new Set();
+  dijkstra(allNodes: Array<Array<Node>>) {
+    const visitedNodes = new Set<Node>();
+    const minHeap = new Heap();
+    const flattened = flatted2DArray(allNodes);
+
+    // add each node to the heap
+    flattened.forEach((node: Node) => {
+      const neighbouringNodes = this.adjacencyList.get(node.toString());
+      if (neighbouringNodes) {
+        for (let neighbour of Array.from(neighbouringNodes!.values())) {
+          node.neighbours?.push(neighbour);
+        }
+      }
+      minHeap.push(node);
+    });
+
+    console.log("numRows:", this.numRows);
+    console.log("numCols:", this.numCols);
+
+    while (minHeap.isEmpty() === false) {
+      const closestNode = minHeap.extractMin();
+      console.log("Next closest node:",closestNode)
+      visitedNodes.add(closestNode);
+
+      if (closestNode.isEnd) {
+        return visitedNodes;
+      }
+
+      for (let neighbour of 
+        Array.from(this.adjacencyList.get(closestNode.toString())!)
+      ) {
+        const relaxation = closestNode.distance + neighbour.weight + 1;
+
+        if (relaxation < neighbour.distance) {
+          minHeap.updateDistance(neighbour, relaxation)
+          console.log("Neighbour distance updated:", neighbour);
+          // add previous node maybe
+        }
+      }
+    }
   }
 
   printGraph() {

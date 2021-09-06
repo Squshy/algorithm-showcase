@@ -79,15 +79,22 @@ export const Grid: React.FC<GridProps> = ({}) => {
 
   const onGridNodeClick = (node: Node) => {
     const allNodes = [...nodes];
+    const currentNode = allNodes[node.row][node.col];
     switch (nodeToSet) {
       case NODE_TO_SET.START:
-        allNodes[node.row][node.col].isStart = true;
+        currentNode.isStart = true;
+        currentNode.distance = 0;
         break;
       case NODE_TO_SET.END:
-        allNodes[node.row][node.col].isEnd = true;
+        currentNode.isEnd = true;
+        currentNode.distance = Infinity;
         break;
     }
     setNodes(allNodes);
+  };
+
+  const startAlgo = () => {
+    console.log(graph!.dijkstra(nodes));
   };
 
   const displayGrid = () => {
@@ -122,7 +129,7 @@ export const Grid: React.FC<GridProps> = ({}) => {
           )}
         </div>
         <div
-          className={`mt-5 bg-gradient-to-r from-blue-500 to-purple-500 w-full p-2 flex flex-row rounded-md items-center justify-center space-x-4 border`}
+          className={`mt-5 bg-gradient-to-r from-blue-500 to-purple-500 w-full p-2 flex flex-row rounded-md items-center justify-center space-x-4 shadow-sm`}
         >
           <button
             className={`p-2 bg-green-500 border-green-300 border w-24 rounded-md hover:bg-opacity-75 transition duration-150 ease-in-out`}
@@ -135,6 +142,12 @@ export const Grid: React.FC<GridProps> = ({}) => {
             onClick={() => setNodeToSet(NODE_TO_SET.END)}
           >
             END
+          </button>
+          <button
+            className={`p-2 bg-purple-500 border-purple-300 border w-24 rounded-md hover:bg-opacity-75 transition duration-150 ease-in-out`}
+            onClick={() => startAlgo()}
+          >
+            PLAY
           </button>
         </div>
       </div>

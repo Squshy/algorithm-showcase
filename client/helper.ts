@@ -12,11 +12,11 @@ export const TestHeap = () => {
   heap.push(new Node(1, 2, 44));
   console.log(heap.nodes.join(","));
   let a = [];
-  a.push(heap.extractMin());
-  a.push(heap.extractMin());
-  a.push(heap.extractMin());
-  a.push(heap.extractMin());
-  a.push(heap.extractMin());
+  a.push(heap.extractMin().distance);
+  a.push(heap.extractMin().distance);
+  a.push(heap.extractMin().distance);
+  a.push(heap.extractMin().distance);
+  a.push(heap.extractMin().distance);
   console.log("Bottom 5 items:", a);
   a.push(heap.extractMin());
   console.log(heap.nodes.join(","));
@@ -33,14 +33,14 @@ export const TestGraph = () => {
     new Node(1, 2),
   ];
 
-  for(let i = 0; i < nodes.length; i ++ ){
-    graph.addVertex(nodes[i])
+  for (let i = 0; i < nodes.length; i++) {
+    graph.addVertex(nodes[i]);
   }
 
-  graph.addEdge(nodes[0], nodes[1])
-  graph.addEdge(nodes[0], nodes[3])
-  graph.addEdge(nodes[0], nodes[4])
-  graph.addEdge(nodes[1], nodes[2])
-  graph.addEdge(nodes[2], nodes[5])
+  graph.addEdge(nodes[0], nodes[1]);
+  graph.addEdge(nodes[0], nodes[3]);
+  graph.addEdge(nodes[0], nodes[4]);
+  graph.addEdge(nodes[1], nodes[2]);
+  graph.addEdge(nodes[2], nodes[5]);
   graph.printGraph();
-}
+};
