@@ -60,12 +60,6 @@ export class Graph {
 
     // add each node to the heap
     flattened.forEach((node: Node) => {
-      const neighbouringNodes = this.adjacencyList.get(node.toString());
-      if (neighbouringNodes) {
-        for (let neighbour of Array.from(neighbouringNodes!.values())) {
-          node.neighbours?.push(neighbour);
-        }
-      }
       minHeap.push(node);
     });
 
@@ -87,8 +81,8 @@ export class Graph {
         const relaxation = closestNode.distance + neighbour.weight + 1;
 
         if (relaxation < neighbour.distance) {
-          minHeap.updateDistance(neighbour, relaxation)
-          console.log("Neighbour distance updated:", neighbour);
+          if(minHeap.updateDistance(neighbour, relaxation) === null) console.log("\n\nUndefined", neighbour)
+          // console.log("Neighbour distance updated:", neighbour);
           // add previous node maybe
         }
       }

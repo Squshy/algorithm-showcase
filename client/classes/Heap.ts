@@ -22,8 +22,8 @@ export class Heap {
 
   swap(i: number, j: number) {
     const temp_ = this.nodes[i];
-    this.positions.set(this.nodes[i].toString(), this.positions.get(this.nodes[j].toString())!)
-    this.positions.set(this.nodes[j].toString(), this.positions.get(temp_.toString())!)
+    this.positions.set(this.nodes[i].toString(), j);
+    this.positions.set(this.nodes[j].toString(), i);
     this.nodes[i] = this.nodes[j];
     this.nodes[j] = temp_;
   }
@@ -75,19 +75,21 @@ export class Heap {
     }
   }
 
-  updateDistance(node:Node, distance:number) {
-    const nodeIndex = this.positions.get(node.toString())!;
-    const nodes = [...this.nodes]
-    nodes[nodeIndex].distance = distance;
-    this.nodes = nodes;
-  }
-
-  getNeighbours(nodes:Array<Node>) {
-    const ret:Array<Node> = []
-    for(let node of nodes) {
-      ret.push(this.nodes[this.positions.get(node.toString())!])
+  updateDistance(node: Node, distance: number) {
+    const nodeIndex = this.positions.get(node.toString());
+    if (nodeIndex === undefined) return null;
+    console.log("node index:", nodeIndex);
+    this.nodes[nodeIndex].distance = distance;
+    console.log("Node:", node);
+    let index = nodeIndex;
+    while (
+      index > 0 &&
+      this.nodes[index].getWeightedDistance() <
+        this.nodes[this.getParentIndex(index)].getWeightedDistance()
+    ) {
+      this.swap(index, this.getParentIndex(index))
+      index = this.getParentIndex(index)
     }
-    return ret
   }
 
   isEmpty() {
@@ -96,9 +98,11 @@ export class Heap {
 
   extractMin() {
     const minValue = this.nodes[0];
+    const lastNode = this.nodes[this.nodes.length - 1];
     // swap last node to first
-    this.nodes[0] = this.nodes[this.nodes.length - 1];
-    this.positions.delete(minValue.toString())
+    this.nodes[0] = lastNode;
+    this.positions.set(lastNode.toString(), 0);
+    this.positions.delete(minValue.toString());
     // remove last element we just swapped
     this.nodes.length--;
     this.heapifyDown();
