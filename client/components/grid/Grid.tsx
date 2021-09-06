@@ -3,6 +3,7 @@ import { Graph } from "../../classes/Graph";
 import { Node } from "../../classes/Node";
 import { useOnScreenResize } from "../../hooks/useOnResize";
 import { SpinnerIcon } from "../../svg/Spinner";
+import { flatted2DArray } from "../../utils";
 import { GridNode } from "./GridNode";
 
 const NODE_TO_SET = {
@@ -94,7 +95,12 @@ export const Grid: React.FC<GridProps> = ({}) => {
   };
 
   const startAlgo = () => {
-    console.log(graph!.dijkstra(nodes));
+    const algoNodes = graph!.dijkstra(nodes)
+    const newNodes = [...nodes]
+    for(let node of algoNodes!) {
+      newNodes[node.row][node.col].visited = true;
+    }
+    setNodes(newNodes)
   };
 
   const displayGrid = () => {

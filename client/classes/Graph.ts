@@ -54,7 +54,7 @@ export class Graph {
   }
 
   dijkstra(allNodes: Array<Array<Node>>) {
-    const visitedNodes = new Set<Node>();
+    const visitedNodes:Array<Node> = [];
     const minHeap = new Heap();
     const flattened = flatted2DArray(allNodes);
 
@@ -63,13 +63,9 @@ export class Graph {
       minHeap.push(node);
     });
 
-    console.log("numRows:", this.numRows);
-    console.log("numCols:", this.numCols);
-
     while (minHeap.isEmpty() === false) {
       const closestNode = minHeap.extractMin();
-      console.log("Next closest node:",closestNode)
-      visitedNodes.add(closestNode);
+      visitedNodes.push(closestNode);
 
       if (closestNode.isEnd) {
         return visitedNodes;
@@ -81,8 +77,7 @@ export class Graph {
         const relaxation = closestNode.distance + neighbour.weight + 1;
 
         if (relaxation < neighbour.distance) {
-          if(minHeap.updateDistance(neighbour, relaxation) === null) console.log("\n\nUndefined", neighbour)
-          // console.log("Neighbour distance updated:", neighbour);
+          minHeap.updateDistance(neighbour, relaxation)
           // add previous node maybe
         }
       }

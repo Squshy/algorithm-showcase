@@ -77,11 +77,10 @@ export class Heap {
 
   updateDistance(node: Node, distance: number) {
     const nodeIndex = this.positions.get(node.toString());
-    if (nodeIndex === undefined) return null;
-    console.log("node index:", nodeIndex);
+    if (nodeIndex === undefined) return;
     this.nodes[nodeIndex].distance = distance;
-    console.log("Node:", node);
     let index = nodeIndex;
+    // re heapify from where we just updated the distance from
     while (
       index > 0 &&
       this.nodes[index].getWeightedDistance() <
