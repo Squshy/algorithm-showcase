@@ -1,3 +1,4 @@
+const colors = require("tailwindcss/colors");
 module.exports = {
   purge: ["./pages/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}"],
   darkMode: false, // or 'media' or 'class'
@@ -20,32 +21,49 @@ module.exports = {
         visitedNode: {
           "0%": {
             transform: "scale(0.2)",
-            backgroundColor: "#F9F871",
+            backgroundColor: colors.green[300],
             borderRadius: "100%",
-            border: "1px black solid",
+            border: "1px white solid",
           },
           "25%": {
             transform: "scale(0.5)",
-            backgroundColor: "#B5ED80",
+            backgroundColor: colors.blue[500],
             border: "1px black solid",
           },
           "50%": {
             transform: "scale(0.7)",
-            backgroundColor: "#75DD96",
+            backgroundColor: colors.purple[500],
           },
           "75%": {
             transform: "scale(1.2)",
-            backgroundColor: "#34CAA9",
+            backgroundColor: colors.purple[600],
           },
           "100%": {
             transform: "scale(1.0)",
-            backgroundColor: "#009BB1",
+            backgroundColor: colors.purple[800],
+          },
+          finalPath: {
+            "0%": {
+              transform: "scale(1.4)",
+              backgroundColor: colors.lime[800],
+              borderRadius: "100%",
+            },
+            "50%": {
+              transform: "scale(0.6)",
+              backgroundColor: colors.blue[300],
+              border: "1px black solid",
+            },
+            "100%": {
+              transform: "scale(1.0)",
+              backgroundColor: colors.blue[300],
+            },
           },
         },
       },
     },
     animation: {
       "visited-node": "visitedNode 1s ease-in-out forwards",
+      "final-path": "finalPath 1s ease-in-out forwards"
     },
   },
   variants: {

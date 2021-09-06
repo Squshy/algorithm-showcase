@@ -81,6 +81,7 @@ export class Graph {
         }
       }
     }
+    return null
   }
 
   printGraph() {

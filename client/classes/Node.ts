@@ -9,6 +9,7 @@ export class Node {
   isEnd: boolean;
   neighbours?: Array<Node>;
   previousNode: Node | null;
+  finalPath: boolean;
 
   constructor(row: number, col: number, distance: number = Infinity) {
     this.weight = 0;
@@ -21,6 +22,7 @@ export class Node {
     this.isEnd = false;
     this.neighbours = [];
     this.previousNode = null;
+    this.finalPath = false;
   }
 
   setWeight(weight: number) {

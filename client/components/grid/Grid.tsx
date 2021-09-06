@@ -3,7 +3,6 @@ import { Graph } from "../../classes/Graph";
 import { Node } from "../../classes/Node";
 import { useOnScreenResize } from "../../hooks/useOnResize";
 import { SpinnerIcon } from "../../svg/Spinner";
-import { flatted2DArray } from "../../utils";
 import { GridNode } from "./GridNode";
 
 const NODE_TO_SET = {
@@ -95,13 +94,27 @@ export const Grid: React.FC<GridProps> = ({}) => {
   };
 
   const startAlgo = () => {
-    const algoNodes = graph!.dijkstra(nodes);
+    if(!graph) return // throw err l8r
+    const algoNodes = graph.dijkstra(nodes);
+    if(!algoNodes) return // throw err l8r
+    const sNodes = [...nodes];
     for (let node of algoNodes!) {
-      const sNodes = [...nodes];
       sNodes[node.row][node.col] = node;
-      setNodes(sNodes);
     }
-    console.log(algoNodes);
+    setNodes(sNodes);
+    setTimeout(() => {
+      animatePath(algoNodes[algoNodes.length-1])
+    })
+  };
+
+  const animatePath = (finalNode: Node) => {
+    const sNodes = [...nodes];
+    let currentNode = finalNode
+    while(currentNode.previousNode !== null) {
+      sNodes[currentNode.row][currentNode.col].finalPath = true;
+      currentNode = currentNode.previousNode;
+    }
+    setNodes(sNodes);
   };
 
   const displayGrid = () => {
