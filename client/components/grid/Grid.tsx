@@ -95,12 +95,13 @@ export const Grid: React.FC<GridProps> = ({}) => {
   };
 
   const startAlgo = () => {
-    const algoNodes = graph!.dijkstra(nodes)
-    const newNodes = [...nodes]
-    for(let node of algoNodes!) {
-      newNodes[node.row][node.col].visited = true;
+    const algoNodes = graph!.dijkstra(nodes);
+    for (let node of algoNodes!) {
+      const sNodes = [...nodes];
+      sNodes[node.row][node.col] = node;
+      setNodes(sNodes);
     }
-    setNodes(newNodes)
+    console.log(algoNodes);
   };
 
   const displayGrid = () => {

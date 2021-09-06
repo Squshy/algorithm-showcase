@@ -75,10 +75,11 @@ export class Heap {
     }
   }
 
-  updateDistance(node: Node, distance: number) {
+  updateDistance(node: Node, distance: number, previousNode: Node) {
     const nodeIndex = this.positions.get(node.toString());
     if (nodeIndex === undefined) return;
     this.nodes[nodeIndex].distance = distance;
+    this.nodes[nodeIndex].previousNode = previousNode;
     let index = nodeIndex;
     // re heapify from where we just updated the distance from
     while (
@@ -86,8 +87,8 @@ export class Heap {
       this.nodes[index].getWeightedDistance() <
         this.nodes[this.getParentIndex(index)].getWeightedDistance()
     ) {
-      this.swap(index, this.getParentIndex(index))
-      index = this.getParentIndex(index)
+      this.swap(index, this.getParentIndex(index));
+      index = this.getParentIndex(index);
     }
   }
 
@@ -105,6 +106,7 @@ export class Heap {
     // remove last element we just swapped
     this.nodes.length--;
     this.heapifyDown();
+    minValue.visited = true;
 
     return minValue;
   }

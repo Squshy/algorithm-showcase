@@ -77,8 +77,7 @@ export class Graph {
         const relaxation = closestNode.distance + neighbour.weight + 1;
 
         if (relaxation < neighbour.distance) {
-          minHeap.updateDistance(neighbour, relaxation)
-          // add previous node maybe
+          minHeap.updateDistance(neighbour, relaxation, closestNode)
         }
       }
     }

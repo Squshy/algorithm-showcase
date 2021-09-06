@@ -8,6 +8,7 @@ export class Node {
   isStart: boolean;
   isEnd: boolean;
   neighbours?: Array<Node>;
+  previousNode: Node | null;
 
   constructor(row: number, col: number, distance: number = Infinity) {
     this.weight = 0;
@@ -18,7 +19,8 @@ export class Node {
     this.isWall = false;
     this.isStart = false;
     this.isEnd = false;
-    this.neighbours = []
+    this.neighbours = [];
+    this.previousNode = null;
   }
 
   setWeight(weight: number) {
@@ -42,6 +44,6 @@ export class Node {
   }
 
   toString() {
-    return `[${this.row} ${this.col}]`
+    return `[${this.row} ${this.col}]`;
   }
 }

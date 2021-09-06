@@ -16,6 +16,36 @@ module.exports = {
       inset: {
         105: "105px",
       },
+      keyframes: {
+        visitedNode: {
+          "0%": {
+            transform: "scale(0.2)",
+            backgroundColor: "#F9F871",
+            borderRadius: "100%",
+            border: "1px black solid",
+          },
+          "25%": {
+            transform: "scale(0.5)",
+            backgroundColor: "#B5ED80",
+            border: "1px black solid",
+          },
+          "50%": {
+            transform: "scale(0.7)",
+            backgroundColor: "#75DD96",
+          },
+          "75%": {
+            transform: "scale(1.2)",
+            backgroundColor: "#34CAA9",
+          },
+          "100%": {
+            transform: "scale(1.0)",
+            backgroundColor: "#009BB1",
+          },
+        },
+      },
+    },
+    animation: {
+      "visited-node": "visitedNode 1s ease-in-out forwards",
     },
   },
   variants: {
@@ -23,8 +53,8 @@ module.exports = {
       width: ["responsive", "hover"],
       height: ["responsive", "hover"],
       borderWidth: ["responsive", "hover"],
-      borderColor: ['responsive', 'hover'],
-      zIndex: ['hover']
+      borderColor: ["responsive", "hover"],
+      zIndex: ["hover"],
     },
   },
   plugins: [],
