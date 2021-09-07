@@ -1,16 +1,11 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Graph } from "../../classes/Graph";
 import { Node } from "../../classes/Node";
+import { NODE_TO_SET } from "../../constants";
 import { useOnScreenResize } from "../../hooks/useOnResize";
 import { SpinnerIcon } from "../../svg/Spinner";
 import { GridNode } from "./GridNode";
-
-const NODE_TO_SET = {
-  START: "START",
-  END: "END",
-  WALL: "WALL",
-  WEIGHT: "WEIGHT",
-};
+import { GridOptions } from "./GridOptions";
 
 const PX_IN_REM = 16;
 
@@ -161,7 +156,9 @@ export const Grid: React.FC<GridProps> = ({}) => {
         checkStartEnd();
         currentNode.isWall = false;
         currentNode.distance = Infinity;
-        currentNode.weight > 0 ? currentNode.weight = 0 : currentNode.weight = 5;
+        currentNode.weight > 0
+          ? (currentNode.weight = 0)
+          : (currentNode.weight = 5);
         break;
     }
 
@@ -198,19 +195,20 @@ export const Grid: React.FC<GridProps> = ({}) => {
       return;
     }
     const algoNodes = graph.dijkstra(nodes);
-    if (!algoNodes) {
-      setError("Game error, please refresh.");
-      return;
+    if (algoNodes === null) {
+      setError("Game error, try changing some nodes.");
+      unvisitGrid();
+    } else {
+      const sNodes = [...nodes];
+      for (let node of algoNodes) {
+        sNodes[node.row][node.col] = node;
+      }
+      setError(null);
+      setNodes(sNodes);
+      setTimeout(() => {
+        animatePath(algoNodes[algoNodes.length - 1]);
+      }, 500);
     }
-    const sNodes = [...nodes];
-    for (let node of algoNodes) {
-      sNodes[node.row][node.col] = node;
-    }
-    setError(null);
-    setNodes(sNodes);
-    setTimeout(() => {
-      animatePath(algoNodes[algoNodes.length - 1]);
-    }, 500);
   };
 
   const animatePath = (finalNode: Node) => {
@@ -259,52 +257,11 @@ export const Grid: React.FC<GridProps> = ({}) => {
         >
           <p aria-label={`game error`}>{error && error}</p>
         </div>
-        <div
-          className={`bg-gradient-to-r from-blue-500 to-purple-500 w-full p-2 rounded-md items-center justify-center shadow-sm`}
-        >
-          <div
-            className={`flex flex-row flex-wrap -mx-2 justify-center items-center`}
-          >
-            <button
-              className={`p-2 bg-green-500 border-green-300 border w-24 rounded-md hover:bg-opacity-75 transition duration-150 ease-in-out mx-2`}
-              onClick={() => setNodeToSet(NODE_TO_SET.START)}
-            >
-              START
-            </button>
-            <button
-              className={`p-2 bg-red-500 border-red-300 border w-24 rounded-md hover:bg-opacity-75 transition duration-150 ease-in-out mx-2`}
-              onClick={() => setNodeToSet(NODE_TO_SET.END)}
-            >
-              END
-            </button>
-            <button
-              className={`p-2 bg-purple-500 border-purple-300 border w-24 rounded-md hover:bg-opacity-75 transition duration-150 ease-in-out mx-2`}
-              onClick={() => startAlgo()}
-            >
-              PLAY
-            </button>
-
-            <button
-              className={`p-2 bg-black-50 border-white border w-24 rounded-md hover:bg-opacity-75 transition duration-150 ease-in-out mx-2`}
-              onClick={() => setNodeToSet(NODE_TO_SET.WALL)}
-            >
-              WALL
-            </button>
-
-            <button
-              className={`p-2 bg-pink-500 border-white border w-24 rounded-md hover:bg-opacity-75 transition duration-150 ease-in-out mx-2`}
-              onClick={() => setNodeToSet(NODE_TO_SET.WEIGHT)}
-            >
-              WEIGHT
-            </button>
-            <button
-              className={`p-2 bg-gray-500 border-purple-300 border w-24 rounded-md hover:bg-opacity-75 transition duration-150 ease-in-out mx-2`}
-              onClick={() => resetGrid()}
-            >
-              RESET
-            </button>
-          </div>
-        </div>
+        <GridOptions
+          startAlgo={startAlgo}
+          resetGrid={resetGrid}
+          setNodeToSet={setNodeToSet}
+        />
       </div>
     </>
   );
