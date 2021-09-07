@@ -22,7 +22,7 @@ export const GridNode: React.FC<GridNodeProps> = ({
       } ${endRow && "border-b-2"} ${endCol && "border-r-2"} ${
         node.col === 0 && "border-l-2"
       }
-      ${node.isWall && "bg-white"}
+      ${node.isWall && "bg-yellow-500"}
       ${
         node.visited &&
         node.isStart === false &&
