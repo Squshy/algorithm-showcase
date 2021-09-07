@@ -2,10 +2,8 @@ import type { NextPage } from "next";
 import { Grid } from "../components/grid/Grid";
 import { Nav } from "../components/nav/Nav";
 import { SideBar } from "../components/nav/sidebar/Sidebar";
-import { TestGraph, TestHeap } from "../helper";
 
 const Home: NextPage = () => {
-  TestHeap();
   return (
     <div className={`font-sans antialiased`}>
       <Nav />

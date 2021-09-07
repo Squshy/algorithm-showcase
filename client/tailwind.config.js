@@ -36,11 +36,11 @@ module.exports = {
           },
           "75%": {
             transform: "scale(1.2)",
-            backgroundColor: colors.purple[600],
+            backgroundColor: colors.purple[800],
           },
           "100%": {
             transform: "scale(1.0)",
-            backgroundColor: colors.purple[800],
+            backgroundColor: colors.purple[600],
           },
         },
         finalPath: {
@@ -56,7 +56,7 @@ module.exports = {
           },
           "100%": {
             transform: "scale(1.0)",
-            backgroundColor: colors.blue[300],
+            backgroundColor: colors.blue[500],
           },
         },
       },

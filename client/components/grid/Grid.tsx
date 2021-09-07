@@ -8,6 +8,8 @@ import { GridNode } from "./GridNode";
 const NODE_TO_SET = {
   START: "START",
   END: "END",
+  WALL: "WALL",
+  WEIGHT: "WEIGHT",
 };
 
 const PX_IN_REM = 16;
@@ -17,6 +19,17 @@ interface GridProps {}
 interface GridDimensions {
   rows: number;
   cols: number;
+}
+
+interface StartEndNodes {
+  start: {
+    row: number;
+    col: number;
+  } | null;
+  end: {
+    row: number;
+    col: number;
+  } | null;
 }
 
 export const Grid: React.FC<GridProps> = ({}) => {
@@ -30,6 +43,11 @@ export const Grid: React.FC<GridProps> = ({}) => {
   const [graph, setGraph] = useState<Graph>();
   const [nodes, setNodes] = useState<Array<Array<Node>>>([[]]);
   const [nodeToSet, setNodeToSet] = useState(NODE_TO_SET.START);
+  const [startEndNodes, setStartEndNodes] = useState<StartEndNodes>({
+    start: null,
+    end: null,
+  });
+  const [error, setError] = useState<string | null>(null);
 
   const createGrid = useCallback((maxRows: number, maxCols: number) => {
     const newGraph = new Graph(maxRows, maxCols);
@@ -53,7 +71,6 @@ export const Grid: React.FC<GridProps> = ({}) => {
     }
     setGraph(newGraph);
     setNodes(allNodes);
-    console.log("Set new dudes");
   }, []);
 
   useEffect(() => {
@@ -75,35 +92,76 @@ export const Grid: React.FC<GridProps> = ({}) => {
       createGrid(newGrid.rows, newGrid.cols);
       setGridDimensions(newGrid);
       setLoadingGrid(false);
+      setError(null);
     }, 250);
   }, [width, height, createGrid]);
 
   const onGridNodeClick = (node: Node) => {
     const allNodes = [...nodes];
     const currentNode = allNodes[node.row][node.col];
+
     switch (nodeToSet) {
       case NODE_TO_SET.START:
+        if (startEndNodes.start) {
+          const { row, col } = startEndNodes.start;
+          allNodes[row][col].isStart = false;
+          allNodes[row][col].distance = Infinity;
+          allNodes[row][col].weight = 0;
+        }
+        setStartEndNodes((prevState) => {
+          return { ...prevState, start: { row: node.row, col: node.col } };
+        });
+
         currentNode.isStart = true;
         currentNode.distance = 0;
         break;
+
       case NODE_TO_SET.END:
+        if (startEndNodes.end) {
+          const { row, col } = startEndNodes.end;
+          allNodes[row][col].isEnd = false;
+          allNodes[row][col].distance = Infinity;
+          allNodes[row][col].weight = 0;
+        }
+        setStartEndNodes((prevState) => {
+          return { ...prevState, end: { row: node.row, col: node.col } };
+        });
+
         currentNode.isEnd = true;
         currentNode.distance = Infinity;
         break;
+
+      case NODE_TO_SET.WALL:
+        currentNode.isWall = !currentNode.isWall;
+        console.log(currentNode)
+        break;
     }
+
     setNodes(allNodes);
   };
 
   const resetGrid = () => {
     createGrid(gridDimensions.rows, gridDimensions.cols);
+    setStartEndNodes({ start: null, end: null });
   };
 
   const startAlgo = () => {
-    if (!graph) return; // throw err l8r
+    if (!graph) {
+      setError("Game error, please refresh.");
+      return;
+    }
+    if (startEndNodes.start === null || startEndNodes.end === null) {
+      setError("You must select a start and an end node.");
+      return;
+    }
+    if (error !== null) return;
     const algoNodes = graph.dijkstra(nodes);
-    if (!algoNodes) return; // throw err l8r
+    if (!algoNodes) {
+      setError("Game error, please refresh.");
+      return;
+    }
     const sNodes = [...nodes];
-    for (let node of algoNodes!) {
+    for (let node of algoNodes) {
       sNodes[node.row][node.col] = node;
     }
     setNodes(sNodes);
@@ -141,7 +199,7 @@ export const Grid: React.FC<GridProps> = ({}) => {
   return (
     <>
       <div
-        className={`w-full px-2 py-3 border-gray-800 border-2 rounded-md bg-gray-700 bg-opacity-25`}
+        className={`w-full px-2 py-3 border-gray-800 border-2 rounded-md bg-gray-700 bg-opacity-25 space-y-4`}
       >
         <div
           className={`w-full flex flex-wrap h-96 justify-center`}
@@ -154,9 +212,16 @@ export const Grid: React.FC<GridProps> = ({}) => {
           )}
         </div>
         <div
-          className={`mt-5 bg-gradient-to-r from-blue-500 to-purple-500 w-full p-2 rounded-md items-center justify-center shadow-sm`}
+          className={`h-4 text-red-500 text-center items-center flex justify-center`}
         >
-          <div className={`flex flex-row flex-wrap -mx-2 justify-center items-center`}>
+          <p aria-label={`game error`}>{error && error}</p>
+        </div>
+        <div
+          className={`bg-gradient-to-r from-blue-500 to-purple-500 w-full p-2 rounded-md items-center justify-center shadow-sm`}
+        >
+          <div
+            className={`flex flex-row flex-wrap -mx-2 justify-center items-center`}
+          >
             <button
               className={`p-2 bg-green-500 border-green-300 border w-24 rounded-md hover:bg-opacity-75 transition duration-150 ease-in-out mx-2`}
               onClick={() => setNodeToSet(NODE_TO_SET.START)}
@@ -176,6 +241,12 @@ export const Grid: React.FC<GridProps> = ({}) => {
               PLAY
             </button>
 
+            <button
+              className={`p-2 bg-black-50 border-white border w-24 rounded-md hover:bg-opacity-75 transition duration-150 ease-in-out mx-2`}
+              onClick={() => setNodeToSet(NODE_TO_SET.WALL)}
+            >
+              WALL
+            </button>
             <button
               className={`p-2 bg-gray-500 border-purple-300 border w-24 rounded-md hover:bg-opacity-75 transition duration-150 ease-in-out mx-2`}
               onClick={() => resetGrid()}

@@ -65,6 +65,7 @@ export class Graph {
 
     while (minHeap.isEmpty() === false) {
       const closestNode = minHeap.extractMin();
+      if(closestNode.isWall) continue;
       visitedNodes.push(closestNode);
 
       if (closestNode.isEnd) {

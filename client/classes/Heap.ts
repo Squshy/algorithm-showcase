@@ -106,7 +106,7 @@ export class Heap {
     // remove last element we just swapped
     this.nodes.length--;
     this.heapifyDown();
-    minValue.visited = true;
+    if (minValue.isWall === false) minValue.visited = true;
 
     return minValue;
   }

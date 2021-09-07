@@ -37,6 +37,7 @@ export const GridNode: React.FC<GridNodeProps> = ({
       }
       ${node.isStart && "bg-green-500"}
       ${node.isEnd && "bg-red-500"}
+      ${node.isWall && "bg-white"}
       transform duration-150 ease-in-out hover:scale-125 hover:bg-gray-800 hover:border-2 hover:border-gray-400 hover:z-50`}
     ></div>
   );
