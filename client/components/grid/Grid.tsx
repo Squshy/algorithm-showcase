@@ -107,6 +107,21 @@ export const Grid: React.FC<GridProps> = ({}) => {
       ? allNodes[startEndNodes.end.row][startEndNodes.end.col]
       : null;
 
+    const checkStartEnd = () => {
+      if (endNode === currentNode) {
+        currentNode.isEnd = false;
+        setStartEndNodes((prevState) => {
+          return { ...prevState, end: null };
+        });
+      }
+      if (startNode === currentNode) {
+        currentNode.isStart = false;
+        setStartEndNodes((prevState) => {
+          return { ...prevState, start: null };
+        });
+      }
+    };
+
     switch (nodeToSet) {
       case NODE_TO_SET.START:
         if (startNode) {
@@ -137,20 +152,16 @@ export const Grid: React.FC<GridProps> = ({}) => {
         break;
 
       case NODE_TO_SET.WALL:
-        if (endNode === currentNode) {
-          currentNode.isEnd = false;
-          setStartEndNodes((prevState) => {
-            return { ...prevState, end: null };
-          });
-        }
-        if (startNode === currentNode) {
-          currentNode.isStart = false;
-          setStartEndNodes((prevState) => {
-            return { ...prevState, start: null };
-          });
-        }
+        checkStartEnd();
         currentNode.isWall = !currentNode.isWall;
         currentNode.distance = Infinity;
+        break;
+
+      case NODE_TO_SET.WEIGHT:
+        checkStartEnd();
+        currentNode.isWall = false;
+        currentNode.distance = Infinity;
+        currentNode.weight > 0 ? currentNode.weight = 0 : currentNode.weight = 5;
         break;
     }
 
@@ -168,7 +179,9 @@ export const Grid: React.FC<GridProps> = ({}) => {
       for (let j = 0; j < gridDimensions.cols; j++) {
         sNodes[i][j].visited = false;
         sNodes[i][j].finalPath = false;
-        sNodes[i][j].isStart ? sNodes[i][j].distance = 0 : sNodes[i][j].distance = Infinity;
+        sNodes[i][j].isStart
+          ? (sNodes[i][j].distance = 0)
+          : (sNodes[i][j].distance = Infinity);
       }
     }
     setNodes(sNodes);
@@ -276,6 +289,13 @@ export const Grid: React.FC<GridProps> = ({}) => {
               onClick={() => setNodeToSet(NODE_TO_SET.WALL)}
             >
               WALL
+            </button>
+
+            <button
+              className={`p-2 bg-pink-500 border-white border w-24 rounded-md hover:bg-opacity-75 transition duration-150 ease-in-out mx-2`}
+              onClick={() => setNodeToSet(NODE_TO_SET.WEIGHT)}
+            >
+              WEIGHT
             </button>
             <button
               className={`p-2 bg-gray-500 border-purple-300 border w-24 rounded-md hover:bg-opacity-75 transition duration-150 ease-in-out mx-2`}

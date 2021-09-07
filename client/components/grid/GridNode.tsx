@@ -29,6 +29,7 @@ export const GridNode: React.FC<GridNodeProps> = ({
         node.isEnd === false &&
         node.finalPath === false &&
         node.isWall === false &&
+        node.weight === 0 &&
         "bg-purple-900 animate-visited-node"
       }
       ${
@@ -38,6 +39,7 @@ export const GridNode: React.FC<GridNodeProps> = ({
         node.isWall === false &&
         "animate-final-path"
       }
+      ${node.weight > 0 && 'bg-pink-500'}
       ${node.isStart && "bg-green-500"}
       ${node.isEnd && "bg-red-500"}
       transform duration-150 ease-in-out hover:scale-125 hover:bg-gray-800 hover:border-2 hover:border-gray-400 hover:z-50`}
