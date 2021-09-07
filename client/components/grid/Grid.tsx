@@ -100,13 +100,19 @@ export const Grid: React.FC<GridProps> = ({}) => {
     const allNodes = [...nodes];
     const currentNode = allNodes[node.row][node.col];
 
+    const startNode = startEndNodes.start
+      ? allNodes[startEndNodes.start.row][startEndNodes.start.col]
+      : null;
+    const endNode = startEndNodes.end
+      ? allNodes[startEndNodes.end.row][startEndNodes.end.col]
+      : null;
+
     switch (nodeToSet) {
       case NODE_TO_SET.START:
-        if (startEndNodes.start) {
-          const { row, col } = startEndNodes.start;
-          allNodes[row][col].isStart = false;
-          allNodes[row][col].distance = Infinity;
-          allNodes[row][col].weight = 0;
+        if (startNode) {
+          startNode.isStart = false;
+          startNode.distance = Infinity;
+          startNode.weight = 0;
         }
         setStartEndNodes((prevState) => {
           return { ...prevState, start: { row: node.row, col: node.col } };
@@ -117,11 +123,10 @@ export const Grid: React.FC<GridProps> = ({}) => {
         break;
 
       case NODE_TO_SET.END:
-        if (startEndNodes.end) {
-          const { row, col } = startEndNodes.end;
-          allNodes[row][col].isEnd = false;
-          allNodes[row][col].distance = Infinity;
-          allNodes[row][col].weight = 0;
+        if (endNode) {
+          endNode.isEnd = false;
+          endNode.distance = Infinity;
+          endNode.weight = 0;
         }
         setStartEndNodes((prevState) => {
           return { ...prevState, end: { row: node.row, col: node.col } };
@@ -132,8 +137,20 @@ export const Grid: React.FC<GridProps> = ({}) => {
         break;
 
       case NODE_TO_SET.WALL:
+        if (endNode === currentNode) {
+          currentNode.isEnd = false;
+          setStartEndNodes((prevState) => {
+            return { ...prevState, end: null };
+          });
+        }
+        if (startNode === currentNode) {
+          currentNode.isStart = false;
+          setStartEndNodes((prevState) => {
+            return { ...prevState, start: null };
+          });
+        }
         currentNode.isWall = !currentNode.isWall;
-        console.log(currentNode)
+        currentNode.distance = Infinity;
         break;
     }
 
@@ -145,7 +162,20 @@ export const Grid: React.FC<GridProps> = ({}) => {
     setStartEndNodes({ start: null, end: null });
   };
 
-  const startAlgo = () => {
+  const unvisitGrid = async () => {
+    const sNodes = [...nodes];
+    for (let i = 0; i < gridDimensions.rows; i++) {
+      for (let j = 0; j < gridDimensions.cols; j++) {
+        sNodes[i][j].visited = false;
+        sNodes[i][j].finalPath = false;
+        sNodes[i][j].isStart ? sNodes[i][j].distance = 0 : sNodes[i][j].distance = Infinity;
+      }
+    }
+    setNodes(sNodes);
+  };
+
+  const startAlgo = async () => {
+    await unvisitGrid();
     if (!graph) {
       setError("Game error, please refresh.");
       return;
@@ -154,7 +184,6 @@ export const Grid: React.FC<GridProps> = ({}) => {
       setError("You must select a start and an end node.");
       return;
     }
-    if (error !== null) return;
     const algoNodes = graph.dijkstra(nodes);
     if (!algoNodes) {
       setError("Game error, please refresh.");
@@ -164,10 +193,11 @@ export const Grid: React.FC<GridProps> = ({}) => {
     for (let node of algoNodes) {
       sNodes[node.row][node.col] = node;
     }
+    setError(null);
     setNodes(sNodes);
     setTimeout(() => {
       animatePath(algoNodes[algoNodes.length - 1]);
-    });
+    }, 500);
   };
 
   const animatePath = (finalNode: Node) => {

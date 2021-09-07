@@ -22,22 +22,24 @@ export const GridNode: React.FC<GridNodeProps> = ({
       } ${endRow && "border-b-2"} ${endCol && "border-r-2"} ${
         node.col === 0 && "border-l-2"
       }
+      ${node.isWall && "bg-white"}
       ${
         node.visited &&
         node.isStart === false &&
         node.isEnd === false &&
         node.finalPath === false &&
+        node.isWall === false &&
         "bg-purple-900 animate-visited-node"
       }
       ${
         node.finalPath &&
         node.isStart === false &&
         node.isEnd === false &&
+        node.isWall === false &&
         "animate-final-path"
       }
       ${node.isStart && "bg-green-500"}
       ${node.isEnd && "bg-red-500"}
-      ${node.isWall && "bg-white"}
       transform duration-150 ease-in-out hover:scale-125 hover:bg-gray-800 hover:border-2 hover:border-gray-400 hover:z-50`}
     ></div>
   );
