@@ -26,6 +26,7 @@ export const GridNode: React.FC<GridNodeProps> = ({
         node.visited &&
         node.isStart === false &&
         node.isEnd === false &&
+        node.finalPath === false &&
         "bg-purple-900 animate-visited-node"
       }
       ${

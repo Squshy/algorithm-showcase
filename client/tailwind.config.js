@@ -42,28 +42,28 @@ module.exports = {
             transform: "scale(1.0)",
             backgroundColor: colors.purple[800],
           },
-          finalPath: {
-            "0%": {
-              transform: "scale(1.4)",
-              backgroundColor: colors.lime[800],
-              borderRadius: "100%",
-            },
-            "50%": {
-              transform: "scale(0.6)",
-              backgroundColor: colors.blue[300],
-              border: "1px black solid",
-            },
-            "100%": {
-              transform: "scale(1.0)",
-              backgroundColor: colors.blue[300],
-            },
+        },
+        finalPath: {
+          "0%": {
+            transform: "scale(1.4)",
+            backgroundColor: colors.lime[800],
+            borderRadius: "100%",
+          },
+          "50%": {
+            transform: "scale(0.6)",
+            backgroundColor: colors.blue[200],
+            border: "1px black solid",
+          },
+          "100%": {
+            transform: "scale(1.0)",
+            backgroundColor: colors.blue[300],
           },
         },
       },
     },
     animation: {
       "visited-node": "visitedNode 1s ease-in-out forwards",
-      "final-path": "finalPath 1s ease-in-out forwards"
+      "final-path": "finalPath 1s ease-in-out forwards",
     },
   },
   variants: {

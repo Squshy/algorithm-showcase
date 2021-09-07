@@ -31,7 +31,7 @@ export const Grid: React.FC<GridProps> = ({}) => {
   const [nodes, setNodes] = useState<Array<Array<Node>>>([[]]);
   const [nodeToSet, setNodeToSet] = useState(NODE_TO_SET.START);
 
-  const createGrid = useCallback((maxRows, maxCols) => {
+  const createGrid = useCallback((maxRows: number, maxCols: number) => {
     const newGraph = new Graph(maxRows, maxCols);
     const allNodes: Array<Array<Node>> = [];
 
@@ -53,6 +53,7 @@ export const Grid: React.FC<GridProps> = ({}) => {
     }
     setGraph(newGraph);
     setNodes(allNodes);
+    console.log("Set new dudes");
   }, []);
 
   useEffect(() => {
@@ -93,24 +94,28 @@ export const Grid: React.FC<GridProps> = ({}) => {
     setNodes(allNodes);
   };
 
+  const resetGrid = () => {
+    createGrid(gridDimensions.rows, gridDimensions.cols);
+  };
+
   const startAlgo = () => {
-    if(!graph) return // throw err l8r
+    if (!graph) return; // throw err l8r
     const algoNodes = graph.dijkstra(nodes);
-    if(!algoNodes) return // throw err l8r
+    if (!algoNodes) return; // throw err l8r
     const sNodes = [...nodes];
     for (let node of algoNodes!) {
       sNodes[node.row][node.col] = node;
     }
     setNodes(sNodes);
     setTimeout(() => {
-      animatePath(algoNodes[algoNodes.length-1])
-    })
+      animatePath(algoNodes[algoNodes.length - 1]);
+    });
   };
 
   const animatePath = (finalNode: Node) => {
     const sNodes = [...nodes];
-    let currentNode = finalNode
-    while(currentNode.previousNode !== null) {
+    let currentNode = finalNode;
+    while (currentNode.previousNode !== null) {
       sNodes[currentNode.row][currentNode.col].finalPath = true;
       currentNode = currentNode.previousNode;
     }
@@ -149,26 +154,35 @@ export const Grid: React.FC<GridProps> = ({}) => {
           )}
         </div>
         <div
-          className={`mt-5 bg-gradient-to-r from-blue-500 to-purple-500 w-full p-2 flex flex-row rounded-md items-center justify-center space-x-4 shadow-sm`}
+          className={`mt-5 bg-gradient-to-r from-blue-500 to-purple-500 w-full p-2 rounded-md items-center justify-center shadow-sm`}
         >
-          <button
-            className={`p-2 bg-green-500 border-green-300 border w-24 rounded-md hover:bg-opacity-75 transition duration-150 ease-in-out`}
-            onClick={() => setNodeToSet(NODE_TO_SET.START)}
-          >
-            START
-          </button>
-          <button
-            className={`p-2 bg-red-500 border-red-300 border w-24 rounded-md hover:bg-opacity-75 transition duration-150 ease-in-out`}
-            onClick={() => setNodeToSet(NODE_TO_SET.END)}
-          >
-            END
-          </button>
-          <button
-            className={`p-2 bg-purple-500 border-purple-300 border w-24 rounded-md hover:bg-opacity-75 transition duration-150 ease-in-out`}
-            onClick={() => startAlgo()}
-          >
-            PLAY
-          </button>
+          <div className={`flex flex-row flex-wrap -mx-2 justify-center items-center`}>
+            <button
+              className={`p-2 bg-green-500 border-green-300 border w-24 rounded-md hover:bg-opacity-75 transition duration-150 ease-in-out mx-2`}
+              onClick={() => setNodeToSet(NODE_TO_SET.START)}
+            >
+              START
+            </button>
+            <button
+              className={`p-2 bg-red-500 border-red-300 border w-24 rounded-md hover:bg-opacity-75 transition duration-150 ease-in-out mx-2`}
+              onClick={() => setNodeToSet(NODE_TO_SET.END)}
+            >
+              END
+            </button>
+            <button
+              className={`p-2 bg-purple-500 border-purple-300 border w-24 rounded-md hover:bg-opacity-75 transition duration-150 ease-in-out mx-2`}
+              onClick={() => startAlgo()}
+            >
+              PLAY
+            </button>
+
+            <button
+              className={`p-2 bg-gray-500 border-purple-300 border w-24 rounded-md hover:bg-opacity-75 transition duration-150 ease-in-out mx-2`}
+              onClick={() => resetGrid()}
+            >
+              RESET
+            </button>
+          </div>
         </div>
       </div>
     </>
