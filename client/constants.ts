@@ -4,3 +4,16 @@ export const NODE_TO_SET = {
   WALL: "WALL",
   WEIGHT: "WEIGHT",
 };
+
+export const SIDEBAR_LINKS = {
+  PATHFINDING: {
+    id: "PATHFINDING",
+    text: "Pathfinding",
+    href: "/pathfinding"
+  },
+  MEME: {
+    id: "MEME",
+    text: "Meme",
+    href: "/meme"
+  }
+};

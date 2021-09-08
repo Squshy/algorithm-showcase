@@ -1,9 +1,11 @@
 import React from "react";
 import { LightningBoltIcon } from "@heroicons/react/solid";
 
-interface NavProps {}
+interface NavProps {
+  display?: JSX.Element;
+}
 
-export const Nav: React.FC<NavProps> = ({}) => {
+export const Nav: React.FC<NavProps> = ({ display }) => {
   return (
     <header
       className={`sticky top-0 z-50 bg-opacity-50 bg-gray-900 backdrop-filter backdrop-blur`}
@@ -20,7 +22,7 @@ export const Nav: React.FC<NavProps> = ({}) => {
             </div>
             <p className={`font-extralight text-2xl`}>ALGORITHMS</p>
           </div>
-        <div className={`font-thin`}>DIJKSTRA</div>
+          {display}
         </div>
       </div>
     </header>
