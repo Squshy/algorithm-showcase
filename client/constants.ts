@@ -11,11 +11,6 @@ export const SIDEBAR_LINKS = {
     text: "Pathfinding",
     href: "/pathfinding"
   },
-  MEME: {
-    id: "MEME",
-    text: "Meme",
-    href: "/meme"
-  }
 };
 
 export const PATHFINDING_ALGOS = {
