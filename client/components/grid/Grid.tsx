@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Graph } from "../../classes/Graph";
 import { Node } from "../../classes/Node";
-import { NODE_TO_SET } from "../../constants";
+import { NODE_TO_SET, PATHFINDING_ALGOS } from "../../constants";
+import { usePathfindingAlgo } from "../../contexts/PathfindingContext";
 import { useOnScreenResize } from "../../hooks/useOnResize";
 import { SpinnerIcon } from "../../svg/Spinner";
 import { GridNode } from "./GridNode";
@@ -43,6 +44,7 @@ export const Grid: React.FC<GridProps> = ({}) => {
     end: null,
   });
   const [error, setError] = useState<string | null>(null);
+  const selectedAlgo = usePathfindingAlgo();
 
   const createGrid = useCallback((maxRows: number, maxCols: number) => {
     const newGraph = new Graph(maxRows, maxCols);
@@ -184,17 +186,33 @@ export const Grid: React.FC<GridProps> = ({}) => {
     setNodes(sNodes);
   };
 
-  const startAlgo = async () => {
-    await unvisitGrid();
+  const preGameErrors = () => {
     if (!graph) {
       setError("Game error, please refresh.");
-      return;
+      return false;
     }
     if (startEndNodes.start === null || startEndNodes.end === null) {
       setError("You must select a start and an end node.");
-      return;
+      return false;
     }
-    const algoNodes = graph.dijkstra(nodes);
+    return true;
+  };
+
+  const selectAlgo = () => {
+    if (selectedAlgo === PATHFINDING_ALGOS.DIJKSTRA) {
+      return graph!.dijkstra(nodes);
+    }
+
+    // default return dijkstra
+    return graph!.dijkstra(nodes);
+  };
+
+  const startAlgo = async () => {
+    await unvisitGrid();
+    if (!preGameErrors()) return;
+
+    const algoNodes = selectAlgo();
+    
     if (algoNodes === null) {
       setError("Game error, try changing some nodes.");
       unvisitGrid();

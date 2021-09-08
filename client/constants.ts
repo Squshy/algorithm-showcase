@@ -17,3 +17,7 @@ export const SIDEBAR_LINKS = {
     href: "/meme"
   }
 };
+
+export const PATHFINDING_ALGOS = {
+  DIJKSTRA: 'Dijkstra',
+}

@@ -18,9 +18,9 @@ export const GridOptions: React.FC<GridOptionsProps> = ({
       className={`bg-gradient-to-r from-blue-500 to-purple-500 w-full p-2 rounded-md items-center justify-center shadow-sm`}
     >
       <div
-        className={`flex flex-row flex-wrap justify-between items-center p-2`}
+        className={`flex flex-col justify-center md:flex-row flex-wrap md:justify-between items-center p-2`}
       >
-        <fieldset className="border border-solid border-white p-1 rounded-md text-center text-sm -m-2 flex bg-opacity-10 shadow-sm bg-white flex-wrap items-center justify-evenly w-full md:w-auto">
+        <fieldset className="border border-solid border-white p-1 rounded-md text-center text-sm  md:-m-2 flex bg-opacity-10 shadow-sm bg-white flex-wrap items-center justify-evenly w-full md:w-auto">
           <legend>NODES</legend>
           <OptionButton
             text={NODE_TO_SET.START}

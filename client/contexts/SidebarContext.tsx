@@ -1,5 +1,4 @@
 import React, { useContext, useState, useMemo } from "react";
-import { SideBar } from "../components/nav/sidebar/Sidebar";
 
 const SidebarContext = React.createContext<string | null>(null);
 const SidebarUpdateContext = React.createContext<Function>(() => {});
