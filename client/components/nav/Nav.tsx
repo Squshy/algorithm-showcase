@@ -8,7 +8,7 @@ interface NavProps {
 export const Nav: React.FC<NavProps> = ({ display }) => {
   return (
     <header
-      className={`sticky top-0 z-50 bg-opacity-50 bg-gray-900 backdrop-filter backdrop-blur`}
+      className={`sticky top-0 z-30 bg-opacity-50 bg-gray-900 backdrop-filter backdrop-blur`}
     >
       <div className={`max-w-8xl mx-auto xl:px-8`}>
         <div
