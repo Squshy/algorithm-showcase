@@ -6,6 +6,11 @@ export const NODE_TO_SET = {
 };
 
 export const SIDEBAR_LINKS = {
+  HOME: {
+    id:"HOME",
+    text:"Home",
+    href:"/"
+  },
   PATHFINDING: {
     id: "PATHFINDING",
     text: "Pathfinding",

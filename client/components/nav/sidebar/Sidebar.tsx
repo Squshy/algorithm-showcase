@@ -14,7 +14,7 @@ export const SideBar: React.FC<SidebarProps> = ({}) => {
     const links:Array<JSX.Element> = [];
     Object.entries(SIDEBAR_LINKS).map((link, i) => {
       const obj = link[1];
-      links.push(<SideLink active={obj.id === activeLink} href={obj.href} text={obj.text} />)
+      links.push(<SideLink active={obj.id === activeLink} href={obj.href} text={obj.text} key={i}/>)
     })
     return links
   }
