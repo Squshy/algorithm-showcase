@@ -7,17 +7,22 @@ export const NODE_TO_SET = {
 
 export const SIDEBAR_LINKS = {
   HOME: {
-    id:"HOME",
-    text:"Home",
-    href:"/"
+    id: "HOME",
+    text: "Home",
+    href: "/",
   },
   PATHFINDING: {
     id: "PATHFINDING",
     text: "Pathfinding",
-    href: "/pathfinding"
+    href: "/pathfinding",
+  },
+  SORTING: {
+    id: "SORTING",
+    text: "Sorting",
+    href: "/sorting",
   },
 };
 
 export const PATHFINDING_ALGOS = {
-  DIJKSTRA: 'Dijkstra',
-}
+  DIJKSTRA: "Dijkstra",
+};
