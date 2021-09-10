@@ -26,3 +26,7 @@ export const SIDEBAR_LINKS = {
 export const PATHFINDING_ALGOS = {
   DIJKSTRA: "Dijkstra",
 };
+
+export const SORTING_ALGOS = {
+  HEAP: "Heap Sort"
+}
