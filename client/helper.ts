@@ -1,9 +1,10 @@
 import { Graph } from "./classes/Graph";
-import { Heap } from "./classes/Heap";
+import { NodeHeap } from "./classes/NodeHeap";
 import { Node } from "./classes/Node";
+import { Heap } from "./classes/Heap";
 
-export const TestHeap = () => {
-  const heap = new Heap();
+export const TestNodeHeap = () => {
+  const heap = new NodeHeap();
   heap.push(new Node(1, 2, 25));
   heap.push(new Node(1, 2, 5));
   heap.push(new Node(1, 2, 40));
@@ -21,6 +22,13 @@ export const TestHeap = () => {
   a.push(heap.extractMin());
   console.log(heap.nodes.join(","));
 };
+
+export const TestHeap = () => {
+  const arr:Array<number> = [5,8,2,43,67]
+  const heap = new Heap(arr);
+  heap.buildMaxHeap();
+  console.log(heap.items)
+}
 
 export const TestGraph = () => {
   const graph = new Graph(2, 3);

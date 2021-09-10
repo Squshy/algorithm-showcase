@@ -1,5 +1,5 @@
 import { flatted2DArray } from "../utils";
-import { Heap } from "./Heap";
+import { NodeHeap } from "./NodeHeap";
 import { Node } from "./Node";
 
 export class Graph {
@@ -55,7 +55,7 @@ export class Graph {
 
   dijkstra(allNodes: Array<Array<Node>>) {
     const visitedNodes: Array<Node> = [];
-    const minHeap = new Heap();
+    const minHeap = new NodeHeap();
     const flattened = flatted2DArray(allNodes);
 
     // add each node to the heap
