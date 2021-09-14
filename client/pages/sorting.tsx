@@ -19,25 +19,45 @@ const Sorting: NextPage = () => {
   const { width, height } = useOnScreenResize();
   const selectedAlgo = useSortingAlgo();
   const updateAlgo = useSortingAlgoUpdate();
-  const [array, setArray] = useState<Array<number>>([]);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [array, setArray] = useState<Array<number>>([]);
+  const [heap, setHeap] = useState<Heap>(new Heap(array));
+  const [currentIndex, setCurrentIndex] = useState<number>(-1);
+  const [lookedAt, setLookedAt] = useState<Set<number>>(() => new Set());
 
   // generatre our random array
   useEffect(() => {
+    createRandomArray();
+  }, [width, height]);
+
+  const addIndexToLookedAt = (i: number) => {
+    setLookedAt((prev) => new Set(prev).add(i));
+  };
+
+  const removeIndexFromLookedAt = (i: number) => {
+    setLookedAt((prev) => {
+      const next = new Set(prev);
+      next.delete(i);
+      return next;
+    });
+  };
+
+  const createRandomArray = () => {
     const curr = containerRef.current;
-    if(curr) {
-      const arrLen = Math.floor(curr.getBoundingClientRect().width / 8)
-      const newArray = Array.from({length: arrLen}, () => Math.floor(Math.random() * 99) + 1)
+    if (curr) {
+      const arrLen = Math.floor(curr.getBoundingClientRect().width / 8);
+      const newArray = Array.from(
+        { length: arrLen },
+        () => Math.floor(Math.random() * 99) + 1
+      );
+      setHeap(new Heap(newArray));
+      setCurrentIndex(-1);
       setArray(newArray);
     }
-  }, [width, height]);
-
-  const heap = useMemo(() => {
-    return new Heap(array);
-  }, [width, height]);
+  };
 
   const runSort = () => {
-    heap.buildMaxHeap();
+    heap.buildMaxHeap(setCurrentIndex, addIndexToLookedAt, removeIndexFromLookedAt);
     setArray(heap.items);
   };
 
@@ -51,14 +71,23 @@ const Sorting: NextPage = () => {
         />
       </Nav>
       <MainBody>
-        <div className={`w-full bg-black-25 p-6 rounded-md h-96`} ref={containerRef}>
-          <SortDisplay array={array} />
+        <div
+          className={`w-full bg-black-25 p-6 rounded-md h-96`}
+          ref={containerRef}
+        >
+          <SortDisplay array={array} currentIndex={currentIndex} lookedAt={lookedAt} />
         </div>
         <button
-          className={`w-16 h-8 bg-purple-500 rounded-md self-center mt-6 hover:bg-purple-600 transition duration-150 ease-out`}
+          className={`p-2 bg-purple-500 rounded-md self-center mt-6 hover:bg-purple-600 transition duration-150 ease-out`}
           onClick={() => runSort()}
         >
           Start
+        </button>
+        <button
+          className={`p-2 bg-purple-500 rounded-md self-center mt-6 hover:bg-purple-600 transition duration-150 ease-out`}
+          onClick={() => createRandomArray()}
+        >
+          New Data
         </button>
       </MainBody>
     </SortingProvider>

@@ -1,3 +1,5 @@
+import { Delay } from "../helper";
+
 export class Heap {
   items: Array<number>;
   constructor(items: Array<number>) {
@@ -16,7 +18,7 @@ export class Heap {
     return index * 2 + 2;
   }
 
-  maxHeapify(index: number) {
+  async maxHeapify(index: number, addLookedAt:Function, removeLookedAt:Function) {
     const left: number = this.left(index);
     const right: number = this.right(index);
     let largest: number = index;
@@ -34,15 +36,24 @@ export class Heap {
         this.items[largest],
         this.items[index],
       ];
-      this.maxHeapify(largest);
+      addLookedAt(index)
+      addLookedAt(largest)
+      await Delay(2);
+      removeLookedAt(index);
+      removeLookedAt(largest);
+      this.maxHeapify(largest, addLookedAt, removeLookedAt);
     }
   }
 
-  buildMaxHeap() {
+  async buildMaxHeap(setIndex: Function, addLookedAt:Function, removeLookedAt:Function) {
     // start at last non-leaf node
     // heapfiy only non-leaf nodes in reverse order
     for (let i = Math.floor(this.items.length / 2 - 1); i >= 0; i--) {
-      this.maxHeapify(i);
+      await Delay(10);
+      this.maxHeapify(i, addLookedAt, removeLookedAt);
+      setIndex(i);
     }
+    // reset the saved index once function is done so we don't see colored bar on first item
+    setIndex(-1);
   }
 }
