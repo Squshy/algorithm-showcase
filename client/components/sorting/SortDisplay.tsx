@@ -18,7 +18,6 @@ export const SortDisplay: React.FC<SortDisplayProps> = ({ array }) => {
   }, [height, width]);
 
   return (
-    <div className={`w-full bg-black-25 p-6 rounded-md h-96`}>
       <div ref={containerRef} className={`flex flex-row justify-center h-full -mr-px -ml-px`}>
         {array.map((num, i) => {
           return (
@@ -31,6 +30,5 @@ export const SortDisplay: React.FC<SortDisplayProps> = ({ array }) => {
           );
         })}
       </div>
-    </div>
   );
 };
