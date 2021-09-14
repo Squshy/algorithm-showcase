@@ -12,7 +12,7 @@ interface DropdownProps {
 export const Dropdown: React.FC<DropdownProps> = ({data, selected,onSubItemClick}) => {
 
   return (
-    <div className={`w-32 md:w-48 h-8`}>
+    <div className={`w-32 md:w-48`}>
       <Menu as="div" className={`relative inline-block text-left w-full`}>
         <div>
           <Menu.Button className="inline-flex justify-between w-full px-4 py-2 text-sm font-medium text-white bg-black-25 border-gray-800 border rounded-md hover:bg-black-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 transition duration-150 ease-in-out">

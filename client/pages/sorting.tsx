@@ -6,13 +6,15 @@ import { Nav } from "../components/nav/Nav";
 import { SortDisplay } from "../components/sorting/SortDisplay";
 import { SIDEBAR_LINKS, SORTING_ALGOS } from "../constants";
 import {
-  SortingProvider,
   useSortingAlgo,
   useSortingAlgoUpdate,
 } from "../contexts/SortingContext";
 import { useSetLink } from "../hooks/useSetLink";
 import { Heap } from "../classes/Heap";
 import { useOnScreenResize } from "../hooks/useOnResize";
+import { PlayIcon, RefreshIcon } from "@heroicons/react/solid";
+
+const COMMON_ICON_STYLES = `w-8 h-8 transform transition duration-300 ease-in-out hover:scale-110 cursor-pointer`;
 
 const Sorting: NextPage = () => {
   useSetLink(SIDEBAR_LINKS.SORTING.id);
@@ -56,13 +58,40 @@ const Sorting: NextPage = () => {
     }
   };
 
-  const runSort = () => {
-    heap.buildMaxHeap(setCurrentIndex, addIndexToLookedAt, removeIndexFromLookedAt);
+  const maxHeap = () => {
+    heap.buildMaxHeap(
+      setCurrentIndex,
+      addIndexToLookedAt,
+      removeIndexFromLookedAt
+    );
     setArray(heap.items);
   };
 
+  const minHeap = () => {
+    heap.buildMinHeap(
+      setCurrentIndex,
+      addIndexToLookedAt,
+      removeIndexFromLookedAt
+    );
+    setArray(heap.items);
+  };
+
+  const runSort = () => {
+    switch (selectedAlgo) {
+      case SORTING_ALGOS.MAX_HEAP:
+        maxHeap();
+        break;
+      case SORTING_ALGOS.MIN_HEAP:
+        minHeap();
+        break;
+      default:
+        maxHeap();
+        break;
+    }
+  };
+
   return (
-    <SortingProvider>
+    <>
       <Nav>
         <Dropdown
           data={SORTING_ALGOS}
@@ -75,22 +104,28 @@ const Sorting: NextPage = () => {
           className={`w-full bg-black-25 p-6 rounded-md h-96`}
           ref={containerRef}
         >
-          <SortDisplay array={array} currentIndex={currentIndex} lookedAt={lookedAt} />
+          <SortDisplay
+            array={array}
+            currentIndex={currentIndex}
+            lookedAt={lookedAt}
+          />
         </div>
-        <button
-          className={`p-2 bg-purple-500 rounded-md self-center mt-6 hover:bg-purple-600 transition duration-150 ease-out`}
-          onClick={() => runSort()}
-        >
-          Start
-        </button>
-        <button
-          className={`p-2 bg-purple-500 rounded-md self-center mt-6 hover:bg-purple-600 transition duration-150 ease-out`}
-          onClick={() => createRandomArray()}
-        >
-          New Data
-        </button>
+        <div className={`flex flex-row justify-center space-x-4 p-2`}>
+          <button onClick={() => runSort()}>
+            <span className="sr-only">Run algorithm</span>
+            <PlayIcon
+              className={`${COMMON_ICON_STYLES} text-green-500 hover:text-green-400`}
+            />
+          </button>
+          <button onClick={() => createRandomArray()}>
+            <span className="sr-only">Get new data</span>
+            <RefreshIcon
+              className={`${COMMON_ICON_STYLES} text-gray-500 hover:text-gray-400 hover:rotate-180`}
+            />
+          </button>
+        </div>
       </MainBody>
-    </SortingProvider>
+    </>
   );
 };
 

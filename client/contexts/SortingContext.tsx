@@ -1,7 +1,7 @@
 import React, { useContext, useState, useMemo } from "react";
 import { SORTING_ALGOS } from "../constants";
 
-const SortingContext = React.createContext<string>(SORTING_ALGOS.HEAP);
+const SortingContext = React.createContext<string>(SORTING_ALGOS.MAX_HEAP);
 const SortingUpdateContext = React.createContext<Function>(() => {});
 
 export const useSortingAlgo = () => {
@@ -13,7 +13,7 @@ export const useSortingAlgoUpdate = () => {
 }
 
 export const SortingProvider: React.FC = ({ children }) => {
-  const [activeAlgo, setActiveAlgo] = useState<string>(SORTING_ALGOS.HEAP);
+  const [activeAlgo, setActiveAlgo] = useState<string>(SORTING_ALGOS.MAX_HEAP);
   const providerValue = useMemo(() => ({activeAlgo, setActiveAlgo}), [activeAlgo, setActiveAlgo])
 
   const updateActiveAlgo = (link:string) => {

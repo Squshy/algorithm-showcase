@@ -18,7 +18,7 @@ export const Bar: React.FC<BarProps> = ({
   const newMaxHeight = maxHeight - 3;
   return (
     <div
-      className={`w-1 flex self-end   mr-px ml-px ${
+      className={`w-1 flex self-end mr-px ml-px ${
         current
           ? `bg-green-500` : lookedAt ? 'bg-red-500'
           : `bg-gradient-to-t from-blue-400 via-purple-500 to-purple-700`
