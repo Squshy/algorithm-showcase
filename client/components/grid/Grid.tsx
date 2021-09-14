@@ -1,14 +1,12 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Graph } from "../../classes/Graph";
 import { Node } from "../../classes/Node";
-import { NODE_TO_SET, PATHFINDING_ALGOS } from "../../constants";
+import { NODE_TO_SET, PATHFINDING_ALGOS, PX_IN_REM } from "../../constants";
 import { usePathfindingAlgo } from "../../contexts/PathfindingContext";
 import { useOnScreenResize } from "../../hooks/useOnResize";
 import { SpinnerIcon } from "../../svg/Spinner";
 import { GridNode } from "./GridNode";
 import { GridOptions } from "./GridOptions";
-
-const PX_IN_REM = 16;
 
 interface GridProps {}
 
@@ -212,7 +210,7 @@ export const Grid: React.FC<GridProps> = ({}) => {
     if (!preGameErrors()) return;
 
     const algoNodes = selectAlgo();
-    
+
     if (algoNodes === null) {
       setError("Game error, try changing some nodes.");
       unvisitGrid();

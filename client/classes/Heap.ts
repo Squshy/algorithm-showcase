@@ -1,113 +1,114 @@
-import { Node } from "./Node";
+import { Delay } from "../helper";
 
 export class Heap {
-  nodes: Array<Node>;
-  positions: Map<string, number>;
-  constructor() {
-    this.nodes = [];
-    this.positions = new Map();
+  items: Array<number>;
+  constructor(items: Array<number>) {
+    this.items = [...items];
   }
 
-  getParentIndex(i: number) {
-    return Math.floor((i - 1) / 2);
+  parent(index: number) {
+    return Math.floor((index - 1) / 2);
   }
 
-  getLeftChildIndex(i: number) {
-    return i * 2 + 1;
+  left(index: number) {
+    return index * 2 + 1;
   }
 
-  getRightChildIndex(i: number) {
-    return i * 2 + 2;
+  right(index: number) {
+    return index * 2 + 2;
   }
 
-  swap(i: number, j: number) {
-    const temp_ = this.nodes[i];
-    this.positions.set(this.nodes[i].toString(), j);
-    this.positions.set(this.nodes[j].toString(), i);
-    this.nodes[i] = this.nodes[j];
-    this.nodes[j] = temp_;
-  }
+  async maxHeapify(
+    index: number,
+    addLookedAt: Function,
+    removeLookedAt: Function
+  ) {
+    const left: number = this.left(index);
+    const right: number = this.right(index);
+    let largest: number = index;
 
-  push(node: Node) {
-    this.nodes.push(node);
-    this.positions.set(node.toString(), this.nodes.length - 1);
-    this.heapifyUp();
-  }
-
-  heapifyUp() {
-    let currentIdx: number = this.nodes.length - 1;
-    if (currentIdx < 0) return;
-
-    while (
-      this.nodes[this.getParentIndex(currentIdx)] &&
-      this.nodes[currentIdx].getWeightedDistance() <
-        this.nodes[this.getParentIndex(currentIdx)].getWeightedDistance()
-    ) {
-      this.swap(currentIdx, this.getParentIndex(currentIdx));
-
-      currentIdx = this.getParentIndex(currentIdx);
+    // if the left child is greater than the current largest
+    if (left < this.items.length && this.items[left] > this.items[largest])
+      largest = left;
+    // if the right child is greater than the current largest
+    if (right < this.items.length && this.items[right] > this.items[largest])
+      largest = right;
+    // If there was a change
+    if (largest !== index) {
+      // swap the items
+      [this.items[index], this.items[largest]] = [
+        this.items[largest],
+        this.items[index],
+      ];
+      addLookedAt(index);
+      addLookedAt(largest);
+      await Delay(5);
+      removeLookedAt(index);
+      removeLookedAt(largest);
+      this.maxHeapify(largest, addLookedAt, removeLookedAt);
     }
   }
 
-  heapifyDown() {
-    let currentIdx = 0;
+  async minHeapify(
+    index: number,
+    addLookedAt: Function,
+    removeLookedAt: Function
+  ) {
+    const left: number = this.left(index);
+    const right: number = this.right(index);
+    let smallest: number = index;
 
-    while (this.nodes[this.getLeftChildIndex(currentIdx)] !== undefined) {
-      let smallestChildIdx = this.getLeftChildIndex(currentIdx);
-
-      if (
-        this.nodes[this.getRightChildIndex(currentIdx)] !== undefined &&
-        this.nodes[this.getRightChildIndex(currentIdx)].getWeightedDistance() <
-          this.nodes[this.getLeftChildIndex(currentIdx)].getWeightedDistance()
-      ) {
-        smallestChildIdx = this.getRightChildIndex(currentIdx);
-      }
-
-      if (
-        this.nodes[currentIdx].getWeightedDistance() >
-        this.nodes[smallestChildIdx].getWeightedDistance()
-      ) {
-        this.swap(currentIdx, smallestChildIdx);
-        currentIdx = smallestChildIdx;
-      } else {
-        return;
-      }
+    // if the left child is smaller than the current smallest 
+    if (left < this.items.length && this.items[left] < this.items[smallest])
+      smallest = left;
+    // if the right child is smaller than the current smallest 
+    if (right < this.items.length && this.items[right] < this.items[smallest])
+      smallest = right;
+    // If there was a change
+    if (smallest !== index) {
+      // swap the items
+      [this.items[index], this.items[smallest]] = [
+        this.items[smallest],
+        this.items[index],
+      ];
+      addLookedAt(index);
+      addLookedAt(smallest);
+      await Delay(5);
+      removeLookedAt(index);
+      removeLookedAt(smallest);
+      this.minHeapify(smallest, addLookedAt, removeLookedAt);
     }
   }
 
-  updateDistance(node: Node, distance: number, previousNode: Node) {
-    const nodeIndex = this.positions.get(node.toString());
-    if (nodeIndex === undefined) return;
-    this.nodes[nodeIndex].distance = distance;
-    this.nodes[nodeIndex].previousNode = previousNode;
-    let index = nodeIndex;
-    // re heapify from where we just updated the distance from
-    while (
-      index > 0 &&
-      this.nodes[index].getWeightedDistance() <
-        this.nodes[this.getParentIndex(index)].getWeightedDistance()
-    ) {
-      this.swap(index, this.getParentIndex(index));
-      index = this.getParentIndex(index);
+  async buildMaxHeap(
+    setIndex: Function,
+    addLookedAt: Function,
+    removeLookedAt: Function
+  ) {
+    // start at last non-leaf node
+    // heapfiy only non-leaf nodes in reverse order
+    for (let i = Math.floor(this.items.length / 2 - 1); i >= 0; i--) {
+      await Delay(10);
+      this.maxHeapify(i, addLookedAt, removeLookedAt);
+      setIndex(i);
     }
+    // reset the saved index once function is done so we don't see colored bar on first item
+    setIndex(-1);
   }
 
-  isEmpty() {
-    return this.nodes.length > 0 ? false : true;
-  }
-
-  extractMin() {
-    const minValue = this.nodes[0];
-    const lastNode = this.nodes[this.nodes.length - 1];
-    // swap last node to first
-    this.nodes[0] = lastNode;
-    this.positions.set(lastNode.toString(), 0);
-    this.positions.delete(minValue.toString());
-    // remove last element we just swapped
-    this.nodes.length--;
-    this.heapifyDown();
-    if (minValue.isWall === false) minValue.visited = true;
-
-    return minValue;
+  async buildMinHeap(
+    setIndex: Function,
+    addLookedAt: Function,
+    removeLookedAt: Function
+  ) {
+    // start at last non-leaf node
+    // heapfiy only non-leaf nodes in reverse order
+    for (let i = Math.floor(this.items.length / 2 - 1); i >= 0; i--) {
+      await Delay(10);
+      this.minHeapify(i, addLookedAt, removeLookedAt);
+      setIndex(i);
+    }
+    // reset the saved index once function is done so we don't see colored bar on first item
+    setIndex(-1);
   }
 }

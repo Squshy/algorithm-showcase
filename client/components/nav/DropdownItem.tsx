@@ -1,12 +1,12 @@
 import React from "react";
 import { Menu } from "@headlessui/react";
 
-interface SubMenuItemProps {
+interface DropdownItemProps {
   name: string;
   onClick: () => void;
 }
 
-export const SubMenuItem: React.FC<SubMenuItemProps> = ({ name, onClick }) => {
+export const DropdownItem: React.FC<DropdownItemProps> = ({ name, onClick }) => {
   return (
     <div className="px-2 py-2" onClick={onClick}>
       <Menu.Item>
