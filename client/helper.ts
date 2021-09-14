@@ -26,7 +26,7 @@ export const TestNodeHeap = () => {
 export const TestHeap = () => {
   const arr:Array<number> = [5,8,2,43,67]
   const heap = new Heap(arr);
-  heap.buildMaxHeap();
+  // heap.buildMaxHeap();
   console.log(heap.items)
 }
 
@@ -52,3 +52,5 @@ export const TestGraph = () => {
   graph.addEdge(nodes[2], nodes[5]);
   graph.printGraph();
 };
+
+export const Delay = (delay:number) => new Promise(res => setTimeout(res, delay))

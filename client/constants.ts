@@ -31,5 +31,4 @@ export const SORTING_ALGOS = {
   HEAP: "Heap Sort"
 }
 
-
 export const PX_IN_REM = 16;
