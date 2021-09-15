@@ -29,7 +29,8 @@ export const PATHFINDING_ALGOS = {
 
 export const SORTING_ALGOS = {
   MAX_HEAP: "Max Heap Sort",
-  MIN_HEAP: "Min Heap Sort"
+  MIN_HEAP: "Min Heap Sort",
+  QUICK_SORT: "Quick Sort",
 }
 
 export const PX_IN_REM = 16;

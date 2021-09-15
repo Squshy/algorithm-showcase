@@ -13,6 +13,7 @@ import { useSetLink } from "../hooks/useSetLink";
 import { Heap } from "../classes/Heap";
 import { useOnScreenResize } from "../hooks/useOnResize";
 import { PlayIcon, RefreshIcon } from "@heroicons/react/solid";
+import { Quicksort } from "../algorithms/Quicksort";
 
 const COMMON_ICON_STYLES = `w-8 h-8 transform transition duration-300 ease-in-out hover:scale-110 cursor-pointer`;
 
@@ -23,9 +24,9 @@ const Sorting: NextPage = () => {
   const updateAlgo = useSortingAlgoUpdate();
   const containerRef = useRef<HTMLDivElement>(null);
   const [array, setArray] = useState<Array<number>>([]);
-  const [heap, setHeap] = useState<Heap>(new Heap(array));
   const [currentIndex, setCurrentIndex] = useState<number>(-1);
   const [lookedAt, setLookedAt] = useState<Set<number>>(() => new Set());
+  const [isAlgoRunning, setIsAlgoRunning] = useState<boolean>(false);
 
   // generatre our random array
   useEffect(() => {
@@ -52,42 +53,48 @@ const Sorting: NextPage = () => {
         { length: arrLen },
         () => Math.floor(Math.random() * 99) + 1
       );
-      setHeap(new Heap(newArray));
       setCurrentIndex(-1);
       setArray(newArray);
     }
   };
 
-  const maxHeap = () => {
-    heap.buildMaxHeap(
-      setCurrentIndex,
-      addIndexToLookedAt,
-      removeIndexFromLookedAt
-    );
-    setArray(heap.items);
-  };
-
-  const minHeap = () => {
-    heap.buildMinHeap(
-      setCurrentIndex,
-      addIndexToLookedAt,
-      removeIndexFromLookedAt
-    );
-    setArray(heap.items);
-  };
-
-  const runSort = () => {
+  const runSort = async () => {
+    const heap = new Heap(array);
     switch (selectedAlgo) {
       case SORTING_ALGOS.MAX_HEAP:
-        maxHeap();
+        heap.buildMaxHeap(
+          setCurrentIndex,
+          addIndexToLookedAt,
+          removeIndexFromLookedAt
+        );
+        setArray(heap.items);
         break;
       case SORTING_ALGOS.MIN_HEAP:
-        minHeap();
+        heap.buildMinHeap(
+          setCurrentIndex,
+          addIndexToLookedAt,
+          removeIndexFromLookedAt
+        );
+        setArray(heap.items);
         break;
-      default:
-        maxHeap();
-        break;
+      case SORTING_ALGOS.QUICK_SORT:
+        const quickArr = await Quicksort(
+          array,
+          0,
+          array.length - 1,
+          addIndexToLookedAt,
+          removeIndexFromLookedAt,
+          setCurrentIndex
+        );
+        setArray(quickArr);
     }
+  };
+
+  const play = async () => {
+    if (isAlgoRunning) return;
+    setIsAlgoRunning(true);
+    await runSort();
+    setIsAlgoRunning(false);
   };
 
   return (
@@ -111,7 +118,7 @@ const Sorting: NextPage = () => {
           />
         </div>
         <div className={`flex flex-row justify-center space-x-4 p-2`}>
-          <button onClick={() => runSort()}>
+          <button onClick={() => play()}>
             <span className="sr-only">Run algorithm</span>
             <PlayIcon
               className={`${COMMON_ICON_STYLES} text-green-500 hover:text-green-400`}
