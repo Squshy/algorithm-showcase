@@ -5,7 +5,6 @@ import { Dropdown } from "../components/nav/Dropdown";
 import { Nav } from "../components/nav/Nav";
 import { PATHFINDING_ALGOS, SIDEBAR_LINKS } from "../constants";
 import {
-  PathfindingProvider,
   usePathfindingAlgo,
   usePathfindingAlgoUpdate,
 } from "../contexts/PathfindingContext";
@@ -17,7 +16,7 @@ const PathFinding: NextPage = () => {
   const currentAlgo = usePathfindingAlgo();
 
   return (
-    <PathfindingProvider>
+    <>
       <Nav>
         <Dropdown
           data={PATHFINDING_ALGOS}
@@ -28,7 +27,7 @@ const PathFinding: NextPage = () => {
       <MainBody>
         <Grid />
       </MainBody>
-    </PathfindingProvider>
+    </>
   );
 };
 
